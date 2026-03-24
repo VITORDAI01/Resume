@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>戴维多尔 · VITOR DAI</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f5f7;
+      --surface: #ffffff;
+      --text-primary: #1d1d1f;
+      --text-secondary: #6e6e73;
+      --text-tertiary: #a1a1a6;
+      --accent: #0071e3;
+      --accent-light: #e8f0fd;
+      --border: rgba(0,0,0,0.08);
+      --shadow: 0 2px 20px rgba(0,0,0,0.06);
+      --shadow-hover: 0 8px 40px rgba(0,0,0,0.12);
+      --radius: 18px;
+      --radius-sm: 12px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      font-family: -apple-system, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+      background: transparent;
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 52px;
+      background: rgba(245,245,247,0.85);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .logo {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 32px;
+    }
+    nav ul a {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav ul a:hover { color: var(--text-primary); }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      background: transparent;
+      position: relative;
+    }
+
+    /* ── Avatar ── */
+    .hero-avatar-wrap {
+      position: relative;
+      width: 148px;
+      height: 148px;
+      margin-bottom: 28px;
+      animation: avatarIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+    .hero-avatar-ring {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, #0071e3, #34aadc, #a8d8f0, #0071e3);
+      animation: ringRotate 6s linear infinite;
+      z-index: 0;
+    }
+    .hero-avatar-ring::before {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: #fbfbfd;
+      z-index: 1;
+    }
+    .hero-avatar {
+      position: relative;
+      width: 148px;
+      height: 148px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center top;
+      z-index: 2;
+      display: block;
+      box-shadow: 0 8px 32px rgba(0, 113, 227, 0.18), 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+      animation: avatarFloat 4s ease-in-out infinite 1s;
+    }
+    .hero-avatar-wrap:hover .hero-avatar {
+      transform: scale(1.04);
+      box-shadow: 0 16px 48px rgba(0, 113, 227, 0.28), 0 4px 16px rgba(0,0,0,0.10);
+    }
+    .hero-avatar-wrap:hover .hero-avatar-ring {
+      animation-duration: 2s;
+    }
+    @keyframes avatarIn {
+      from { opacity: 0; transform: scale(0.7) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes ringRotate {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    @keyframes avatarFloat {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-6px); }
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero h1 {
+      font-size: clamp(48px, 8vw, 88px);
+      font-weight: 700;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      color: var(--text-primary);
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, #0071e3, #34aadc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(18px, 2.5vw, 24px);
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-top: 16px;
+      letter-spacing: -0.3px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-desc {
+      max-width: 560px;
+      font-size: 17px;
+      color: var(--text-secondary);
+      margin-top: 20px;
+      line-height: 1.7;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 36px;
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #0077ed; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,113,227,0.35); }
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-primary);
+      box-shadow: var(--shadow);
+    }
+    .btn-secondary:hover { box-shadow: var(--shadow-hover); transform: translateY(-1px); }
+
+    .hero-stats {
+      display: flex;
+      gap: 48px;
+      margin-top: 64px;
+      animation: fadeUp 0.6s 0.5s ease both;
+    }
+    .stat { text-align: center; }
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      color: var(--text-primary);
+    }
+    .stat-number span { color: var(--accent); }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      margin-top: 2px;
+    }
+
+    /* ── Sections ── */
+    section {
+      padding: 100px 24px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      color: var(--text-primary);
+      margin-bottom: 48px;
+    }
+
+    /* ── Education ── */
+    .edu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .edu-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .edu-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
+    .edu-school {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-primary);
+    }
+    .edu-degree {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+    .edu-time {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 100px;
+      margin-top: 12px;
+    }
+    .edu-research {
+      font-size: 13px;
+      color: var(--accent);
+      margin-top: 12px;
+      font-weight: 500;
+    }
+    .edu-honors {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    /* ── Experience ── */
+    .exp-list { display: flex; flex-direction: column; gap: 20px; }
+    .exp-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 36px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .exp-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+    .exp-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .exp-company {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .exp-role {
+      font-size: 14px;
+      color: var(--accent);
+      font-weight: 500;
+      margin-top: 4px;
+    }
+    .exp-time {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+      padding-top: 4px;
+    }
+    .exp-desc {
+      margin-top: 16px;
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .exp-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .metric {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .metric-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    /* ── Projects ── */
+    .proj-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .proj-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .proj-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
+    .proj-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0071e3, #34aadc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+    .proj-name {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .proj-time {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+    .proj-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 12px;
+      line-height: 1.65;
+    }
+
+    /* ── Skills ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .skill-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .skill-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
+    .skill-icon { font-size: 32px; margin-bottom: 12px; }
+    .skill-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .skill-items {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    /* ── Contact ── */
+    .contact-section {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 64px 48px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      max-width: 960px;
+      margin: 0 auto 100px;
+    }
+    .contact-title {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+    }
+    .contact-sub {
+      font-size: 17px;
+      color: var(--text-secondary);
+      margin-top: 12px;
+    }
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 36px;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+    }
+    .contact-item:hover { background: var(--accent-light); color: var(--accent); transform: translateY(-2px); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 13px;
+      color: var(--text-tertiary);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Divider ── */
+    .full-width-section {
+      padding: 0;
+    }
+    .full-width-section section { padding: 100px 24px; }
+
+    /* ── Tech: Global Background Canvas ── */
+    .bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .bg-canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(0,113,227,0.08) 1.5px, transparent 1.5px);
+      background-size: 36px 36px;
+    }
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+    }
+    .hero-orb-1 {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(0,113,227,0.16) 0%, transparent 65%);
+      top: -200px; right: -180px;
+      animation: orbDrift1 20s ease-in-out infinite;
+    }
+    .hero-orb-2 {
+      width: 580px; height: 580px;
+      background: radial-gradient(circle, rgba(52,170,220,0.13) 0%, transparent 65%);
+      top: 55vh; left: -160px;
+      animation: orbDrift2 26s ease-in-out infinite;
+    }
+    .hero-orb-3 {
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, rgba(0,180,255,0.09) 0%, transparent 65%);
+      bottom: 10vh; right: 5vw;
+      animation: orbDrift3 16s ease-in-out infinite;
+    }
+
+    @keyframes orbDrift1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%       { transform: translate(-50px, 70px) scale(1.06); }
+      66%       { transform: translate(35px, -45px) scale(0.95); }
+    }
+    @keyframes orbDrift2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50%       { transform: translate(65px, -55px) scale(1.09); }
+    }
+    @keyframes orbDrift3 {
+      0%, 100% { transform: translate(0, 0); }
+      50%       { transform: translate(-28px, 32px); }
+    }
+
+    /* ── Tech: Card shimmer on hover ── */
+    .edu-card::after, .exp-card::after, .proj-card::after, .skill-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 55%;
+      height: 100%;
+      background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%);
+      transform: skewX(-18deg);
+      transition: left 0.75s ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .edu-card:hover::after, .exp-card:hover::after, .proj-card:hover::after, .skill-card:hover::after {
+      left: 165%;
+    }
+
+    /* ── Tech: Card hover glow border ── */
+    .edu-card:hover, .exp-card:hover, .proj-card:hover, .skill-card:hover {
+      border-color: rgba(0, 113, 227, 0.22);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,113,227,0.10);
+    }
+
+    /* ── Tech: Metric dot ripple pulse ── */
+    .metric-dot::after {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      background: rgba(0, 113, 227, 0.32);
+      animation: dotRipple 2.6s ease-out infinite;
+      pointer-events: none;
+    }
+    @keyframes dotRipple {
+      0%   { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(4); opacity: 0; }
+    }
+
+    /* ── Tech: Section label glow ── */
+    .section-label {
+      text-shadow: 0 0 18px rgba(0, 113, 227, 0.40);
+    }
+
+    /* ── Tech: Frosted glass sections ── */
+    .full-width-section {
+      background: transparent;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      nav { padding: 0 20px; }
+      nav ul { display: none; }
+      .hero-stats { gap: 28px; }
+      .edu-grid, .proj-grid, .skills-grid { grid-template-columns: 1fr; }
+      .exp-card { padding: 24px; }
+      .contact-section { padding: 48px 24px; }
+      section { padding: 72px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Global background canvas -->
+<div class="bg-canvas">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+</div>
+
+<!-- Navigation -->
+<nav>
+  <a class="logo" href="#">VITOR DAI</a>
+  <ul>
+    <li><a href="#education">教育</a></li>
+    <li><a href="#experience">经历</a></li>
+    <li><a href="#projects">项目</a></li>
+    <li><a href="#skills">技能</a></li>
+    <li><a href="#contact">联系</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-avatar-wrap">
+    <div class="hero-avatar-ring"></div>
+    <img class="hero-avatar" src="photo.jpg" alt="VITOR DAI" />
+  </div>
+  <div class="hero-tag">🎓 清华大学在读硕士 · 27届毕业</div>
+  <h1>戴维多尔<br /><span>VITOR DAI</span></h1>
+  <p class="hero-desc">
+    专注于产品运营与 AI 应用领域，具备丰富的数据驱动运营经验。
+  </p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="#contact">联系我</a>
+    <a class="btn btn-secondary" href="#experience">查看经历</a>
+  </div>
+</div>
+
+<!-- Education -->
+<div id="education">
+  <section>
+    <p class="section-label reveal">Education</p>
+    <h2 class="section-title reveal">教育背景</h2>
+    <div class="edu-grid">
+      <div class="edu-card reveal">
+        <div class="edu-school">清华大学</div>
+        <div class="edu-degree">硕士 · 新闻学院 · 传播学</div>
+        <div class="edu-time">2024.09 — 至今</div>
+        <div class="edu-research">研究方向：新媒体传播、AIGC 应用</div>
+      </div>
+      <div class="edu-card reveal">
+        <div class="edu-school">中国人民大学</div>
+        <div class="edu-degree">本科 · 新闻学院 · 广播电视学</div>
+        <div class="edu-time">2020.09 — 2024.06</div>
+        <div class="edu-research">GPA 3.56 / 4</div>
+        <div class="edu-honors">
+          <span class="tag">万峰林微电影盛典创优二等奖</span>
+          <span class="tag">卓越奖学金</span>
+          <span class="tag">创新杯二等奖</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Experience -->
+<div id="experience" class="full-width-section">
+  <section>
+    <p class="section-label reveal">Experience</p>
+    <h2 class="section-title reveal">实习经历</h2>
+    <div class="exp-list">
+
+      <div class="exp-card reveal">
+        <div class="exp-header">
+          <div>
+            <div class="exp-company">清程极智</div>
+            <div class="exp-role">产品运营实习生 · AI Ping 项目组 · 清华系 AI Infra 企业</div>
+          </div>
+          <div class="exp-time">2025.08 — 2025.11</div>
+        </div>
+        <div class="exp-desc">
+          负责大模型性能评测与优化平台的产品内测体系搭建，从 0 到 1 完成内测用户招募与调研，确定产品用户画像，内测共招募 20 名用户。通过问卷+深访收集核心用户反馈，提炼关键优化点并推动落地，其中「跳转路径简化」「P90 延迟评测」等方案被采纳至正式版本。<br/><br/>
+          独立操盘公众号内容矩阵与增长活动体系，搭建内容发布 SOP 实现流程标准化。策划「1024 程序员节&奇绩创坛」「硅星人双 11 联动」等主题活动，拓展高校、创业者社区、孵化器等渠道合作。
+        </div>
+        <div class="exp-metrics">
+          <div class="metric"><div class="metric-dot"></div>累计注册用户破万</div>
+          <div class="metric"><div class="metric-dot"></div>日均 Tokens 消耗十亿量级</div>
+          <div class="metric"><div class="metric-dot"></div>限免活动周新注册用户 +500%</div>
+          <div class="metric"><div class="metric-dot"></div>Tokens 消耗量周环比 +900%</div>
+          <div class="metric"><div class="metric-dot"></div>注册用户周调用率 50%</div>
+          <div class="metric"><div class="metric-dot"></div>公众号自然增长 500+ 用户</div>
+        </div>
+      </div>
+
+      <div class="exp-card reveal">
+        <div class="exp-header">
+          <div>
+            <div class="exp-company">网易有道</div>
+            <div class="exp-role">新媒体运营编导实习生 · 升学中心 OMO 项目组</div>
+          </div>
+          <div class="exp-time">2024.02 — 2024.06</div>
+        </div>
+        <div class="exp-desc">
+          从 0 到 1 构建四个区域性及一个全国性账号（冷启），在无投流的情况下完成自然流量获取并为对应账号直播间导流。工作内容包括账号规划、账号运营、协同剪辑内容产出、数据分析等多个维度，以业务目标为导向对账号数据负责。各账号周均更新 3–4 篇图文或视频内容，对项目变现流程有深入理解并尝试改进优化。
+        </div>
+        <div class="exp-metrics">
+          <div class="metric"><div class="metric-dot"></div>累计获取 3000w+ 自然流</div>
+          <div class="metric"><div class="metric-dot"></div>涨粉 5w+</div>
+          <div class="metric"><div class="metric-dot"></div>单条最高曝光 120w+</div>
+          <div class="metric"><div class="metric-dot"></div>日均独立产出 3-4 条内容</div>
+        </div>
+      </div>
+
+      <div class="exp-card reveal">
+        <div class="exp-header">
+          <div>
+            <div class="exp-company">中视科华有限公司</div>
+            <div class="exp-role">新媒体运营实习生 · 节目制作中心</div>
+          </div>
+          <div class="exp-time">2023.07 — 2023.10</div>
+        </div>
+        <div class="exp-desc">
+          接手冷启账号「摄像说背后」，在无投流的情况下完成日常账号更新与涨粉目标。主要负责制定选题计划、短视频内容的剪辑制作与多平台账号运营。
+        </div>
+        <div class="exp-metrics">
+          <div class="metric"><div class="metric-dot"></div>产出内容近 30 条</div>
+          <div class="metric"><div class="metric-dot"></div>抖音粉丝数破 2w</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- Projects -->
+<div id="projects">
+  <section>
+    <p class="section-label reveal">Projects</p>
+    <h2 class="section-title reveal">项目经历</h2>
+    <div class="proj-grid">
+      <div class="proj-card reveal">
+        <div class="proj-icon">🎬</div>
+        <div class="proj-name">中国人民大学"832"脱贫攻坚史研究</div>
+        <div class="proj-time">2021.05 — 2023.09</div>
+        <div class="proj-desc">
+          作为随队摄影师、摄像师下乡，以贫困县为单位拍摄主题为脱贫攻坚的调研纪录片。编写调研培训手册与注意事项，负责 2 部纪录片的后期制作。后续作品发布在北京电视台与学习强国。
+        </div>
+      </div>
+      <div class="proj-card reveal">
+        <div class="proj-icon">🍵</div>
+        <div class="proj-name">《红·茶》纪录片</div>
+        <div class="proj-time">2022.11 — 2023.04</div>
+        <div class="proj-desc">
+          获第九届万峰林微电影盛典高校单元创优二等作品。搭建两人摄制团队，负责选题策划、拍摄对象沟通、现场拍摄与后期制作规划。成功联系上当地百年历史茶庄与革命老区亲历者等拍摄对象。
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Skills -->
+<div id="skills" class="full-width-section">
+  <section>
+    <p class="section-label reveal">Skills</p>
+    <h2 class="section-title reveal">个人技能</h2>
+    <div class="skills-grid">
+      <div class="skill-card reveal">
+        <div class="skill-icon">🎞️</div>
+        <div class="skill-name">视频制作</div>
+        <div class="skill-items">
+          <span class="tag">Premiere Pro</span>
+          <span class="tag">剪映</span>
+          <span class="tag">DaVinci Resolve</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-icon">🎵</div>
+        <div class="skill-name">音频制作</div>
+        <div class="skill-items">
+          <span class="tag">Cubase</span>
+          <span class="tag">FL Studio</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-icon">📊</div>
+        <div class="skill-name">数据分析</div>
+        <div class="skill-items">
+          <span class="tag">Excel</span>
+          <span class="tag">Office 套件</span>
+          <span class="tag">数据运营</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-icon">📱</div>
+        <div class="skill-name">新媒体运营</div>
+        <div class="skill-items">
+          <span class="tag">账号冷启</span>
+          <span class="tag">内容矩阵</span>
+          <span class="tag">增长活动</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-icon">🤖</div>
+        <div class="skill-name">AI 应用</div>
+        <div class="skill-items">
+          <span class="tag">AIGC</span>
+          <span class="tag">大模型评测</span>
+          <span class="tag">产品运营</span>
+        </div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="skill-icon">🌐</div>
+        <div class="skill-name">语言能力</div>
+        <div class="skill-items">
+          <span class="tag">英语听说读写</span>
+          <span class="tag">可作为工作语言</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Contact -->
+<div id="contact" style="padding: 0 24px;">
+  <div class="contact-section reveal">
+    <h2 class="contact-title">期待与你合作</h2>
+    <p class="contact-sub">欢迎通过以下方式联系我</p>
+    <div class="contact-links">
+      <a class="contact-item" href="mailto:vitord@qq.com">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        vitord@qq.com
+      </a>
+      <a class="contact-item" href="tel:18257736072">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        182-5773-6072
+      </a>
+      <div class="contact-item">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+        微信：VITOR011009
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 戴维多尔 · VITOR DAI &nbsp;·&nbsp; Made with ♥</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
