@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.DS_Store
+.npmrc
+design-qa.md
+detail-comparison.png
+detail-implementation.png
+homepage-comparison.png
+homepage-implementation.png
+homepage-implementation-1440.png
+mobile-implementation.png
