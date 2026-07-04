@@ -12,23 +12,53 @@ const internships = [
     logoAlt: "同花顺标志",
     role: "达人运营实习生 · B2C 平台运营",
     period: "2026.03 — 至今",
-    summary: "围绕达人分层、内容策略和合作复盘推进增长，并用 Vibe Coding 搭建达人运营中台。",
-    descriptor: "连接内容创作者、平台话题与运营效率",
-    intro: "负责达人 BD、分层管理、内容策略制定、合作跟进与数据复盘，同时探索用轻量工具改善高频运营流程。",
-    goals: ["提升不同类型达人的内容产出稳定性", "放大重点传播话题的参与度与曝光", "减少达人数据核对与证据归档的重复劳动"],
+    summary: "围绕抖音达人合作、话题内容扩散和看后搜转化做运营推进，并用轻量工具沉淀达人数据与合作证据。",
+    descriptor: "把达人内容、平台话题和新增用户链路连接起来",
+    heroImage: "ths-social-growth-bg.png",
+    intro: "在同花顺 B2C 平台运营中，我主要负责达人 BD、账号分层、选题匹配、内容跟进、社群维护和合作复盘。2026 年 H1，同花顺整体新增用户中 17% 来自社媒渠道；抖音作为主阵地，看后搜约 80% 来自达人内容。这说明达人运营不只是做曝光，而是在影响用户从“看到内容”到“主动搜索/下载”的关键转化动作。",
+    proofPoints: [
+      ["17%", "2026 年 H1 同花顺整体新增用户来自社媒渠道，社媒已经成为新增用户来源之一。"],
+      ["80%", "抖音渠道看后搜约 80% 来自达人内容，达人合作直接影响用户主动搜索行为。"],
+      ["闭环", "从达人筛选、选题共创、发布跟进到数据复盘，形成可持续迭代的内容运营链路。"],
+    ],
+    goals: ["建立可持续的达人供给池，区分财经、校园、音乐翻唱、剧情段子等不同账号类型", "把传播话题拆成达人能执行的内容方向，提升曝光、互动和看后搜承接", "把合作视频、达人身份、内容分类和数据反馈沉淀为可追踪的运营资产"],
     actions: [
-      ["达人分层", "围绕财经、校园、音乐翻唱、剧情段子等达人类型，制定差异化选题方向。"],
-      ["话题策划", "参与 #同花顺手游、#同花顺进行曲 等重点传播话题的策划与执行。"],
-      ["校园孵化", "运营 2 个大学生博主社群，通过选题共创、节奏管理与数据反馈提升稳定产出。"],
-      ["工具搭建", "用 Vibe Coding 对接飞书多维表格，完成身份同步、内容分类与合作视频证据归档。"],
+      ["达人池分层", "按账号内容形态和受众场景拆分达人池，区分财经解读、校园生活、音乐翻唱、剧情段子等类型；记录达人身份、内容能力、合作状态和适配话题，避免每次合作从零筛选。"],
+      ["话题内容转译", "参与 #同花顺手游、#同花顺进行曲 等重点话题执行，把品牌侧传播目标翻译成达人可拍、用户愿意停留的内容角度，并根据不同达人类型调整脚本方向。"],
+      ["校园社群推进", "运营 2 个大学生博主社群，跟进选题共创、发布节奏、素材反馈和数据回收；通过群内提醒、案例拆解和节奏管理提升持续产出稳定性。"],
+      ["运营中台沉淀", "基于 Streamlit 和飞书多维表格沉淀达人运营中台，把待采集作品链接转成可复盘、可投流、可归档的数据，支持合作日期重采集、周复盘和月复盘口径。"],
     ],
-    results: [
-      ["3亿+", "#同花顺进行曲累计曝光"],
-      ["4000万+", "#同花顺手游累计曝光"],
-      ["80%+", "达人数据处理效率提升"],
-      ["约 10 秒", "单条数据核对与分类耗时"],
+    evidence: [
+      {
+        kind: "topic",
+        eyebrow: "Topic Case",
+        title: "#同花顺进行曲 内容策略复盘",
+        copy: "这个话题项目用于验证达人内容对“看后搜”和新增用户的承接能力。词条爆发节点出现在 4 月 7 日，爆发后 7 天的日均新增用户明显抬升，说明话题扩散不是停留在曝光层，而是带动了主动搜索与新增转化。",
+        dataRows: [
+          ["爆发前日均新增", "6,686", "4/1-4/6，作为词条爆发前的基准期。"],
+          ["爆发后日均新增", "17,352", "4/7-4/13，词条爆发后的连续观察期。"],
+          ["日均新增提升", "2.6x", "爆发后日均新增约为爆发前的 2.6 倍。"],
+          ["单日新增峰值", "22,866", "4 月 9 日达到阶段最高新增。"],
+        ],
+        details: ["数据观察区间为 2026.03.20 至 2026.04.13，4 月 7 日作为词条爆发节点。", "复盘重点不只看曝光峰值，而是对比爆发前后新增用户的趋势变化。", "结合 H1 业务归因，社媒贡献 17% 整体新增，抖音看后搜约 80% 来自达人内容。"],
+      },
+      {
+        kind: "tool",
+        eyebrow: "Tooling",
+        title: "达人运营中台",
+        image: "ths-platform-overview.jpg",
+        alt: "达人运营中台主面板截图",
+        copy: "达人运营中台是为周复盘、月复盘和内容策略分析服务的内部工具。它把飞书多维表格里的达人作品链接、合作日期、视频数据和复盘字段统一到一个可操作入口，减少人工打开链接、回填表格和重复核对。",
+        modules: [
+          ["开始数据采集", "日常新增作品链接进入飞书“达人视频链接”表后，自动读取待采集记录，打开抖音作品并抓取达人昵称、抖音号、粉丝数、发布时间、标题和互动量。", "结果会写入“达人视频数据上交投流”，同步内容分级，并维护达人主档。"],
+          ["数据重采集", "周复盘或阶段复盘前，按合作日期范围重新读取作品互动量，避免只停留在首次提交时的数据。", "支持写入飞书周度重采集表，也可以导出 Excel，用于复盘前的数据刷新。"],
+          ["达人主档维护", "按抖音号 upsert 达人信息汇总，更新粉丝数，并追加合作视频关系。", "让达人池从一次性合作名单变成可追踪、可复用的运营资产。"],
+          ["复盘页面", "按周度重采集记录或采集日范围查看新增达人、分组概览、采集日趋势、达人贡献排行和爆款明细。", "内容策略页可按话题词观察曝光趋势、排行、环比变化和话题明细。"],
+          ["登录维护", "当抖音 cookies 失效、需要扫码或验证码时，从面板触发重新登录。", "登录完成后保存新的状态，再继续采集或重采集任务。"],
+        ],
+      },
     ],
-    reflection: "传播结果来自选题、达人匹配和执行节奏的共同作用；运营工具的价值，则在于让团队把时间重新投入判断与沟通，而非重复核对。",
+    reflection: "这段经历让我更明确：达人运营的核心不是把内容发出去，而是把平台、达人和用户搜索行为串成一条可验证的链路。社媒新增用户占比和抖音看后搜数据，能证明达人内容对业务增长有实际贡献；工具化沉淀则让团队把时间留给判断、沟通和复盘，而不是重复核对。",
   },
   {
     id: "aiping",
@@ -87,12 +117,31 @@ const internships = [
 
 const projects = [
   {
-    title: "知脉 ResearchWiki",
-    date: "2026.04",
-    image: "researchwiki.png",
-    alt: "ResearchWiki 桌面应用界面展示",
-    summary: "面向学生论文写作场景的本地 AI 文献 Wiki。基于 27 份用户调研完成需求分析、MVP PRD、高保真原型与 PC 端开发。",
-    tags: ["用户研究", "产品设计", "全栈开发"],
+    id: "jellyfish-xhs-news",
+    title: "小水母 AI 助理配图与小红书组图 Skill",
+    date: "2026.06",
+    image: "jellyfish-xhs-news-hero.png",
+    alt: "小水母 AI 助理把 AI 新闻整理成小红书组图的手绘插画",
+    summary: "面向中文内容创作的 Codex Skill，将 AI 新闻、日报和长文章转成带固定视觉 IP 的正文配图与小红书轮播方案。",
+    tags: ["Codex Skill", "内容工作流", "AIGC 视觉 IP"],
+    href: "#/project/jellyfish-xhs-news",
+    subtitle: "从新闻判断到组图生成的个人 IP 内容工作流",
+    repo: "https://github.com/VITORDAI01/jellyfish-xhs-news",
+    intro: "这个项目把“小水母 AI 助理”设定为固定视觉角色，用它连接、过滤、托举和解开信息，帮助中文创作者把 AI 新闻、文章观点和方法论内容转化成可发布的正文配图或小红书 3:4 轮播组图。",
+    goals: ["建立可复用的角色型视觉 IP，而不是每次临时换风格", "让 AI 新闻先经过传播价值判断，再进入组图规划", "把生图提示词、页面结构和生成后质检沉淀成可执行规范"],
+    actions: [
+      ["角色设定", "定义小水母的伞盖、信息触须、皇冠夹、表情和动作规则，保证每张图都能被识别为同一 IP。"],
+      ["内容转译", "设计新闻事实、读者价值、视觉锚点和风险点的提炼流程，把信息从摘要转成可视化结构。"],
+      ["组图工作流", "沉淀小红书封面、事实页、重要性页、影响页、行动页和结尾页的默认节奏。"],
+      ["质量检查", "用角色一致性、白底留白、中文可读性、禁忌风格和传播钩子做生成后自检。"],
+    ],
+    results: [
+      ["1 个", "固定小水母 AI 助理视觉 IP"],
+      ["2 类", "正文配图与小红书新闻组图输出"],
+      ["7 份", "风格、角色、构图、提示词与质检参考文件"],
+      ["5-8 页", "按信息量生成的轮播结构"],
+    ],
+    reflection: "真正可持续的 AIGC 内容生产，不只是“会生成一张图”，而是把判断、结构、角色和质检都变成稳定流程。小水母的价值在于让解释型内容既有识别度，也保留信息筛选的清醒感。",
   },
   {
     title: "“人机共生”AI 艺术展",
@@ -288,17 +337,21 @@ function HomePage({ initialTarget }) {
         <section className="content-section" id="projects">
           <SectionHeading eyebrow="Projects" title="项目经历" />
           <div className="project-list">
-            {projects.map((project) => (
-              <article className="project-row" data-reveal key={project.title}>
+            {projects.map((project) => {
+              const ProjectShell = project.href ? "a" : "article";
+              return (
+              <ProjectShell className="project-row" href={project.href} data-reveal key={project.title}>
                 <div className="project-image"><img src={asset(project.image)} alt={project.alt} /></div>
                 <div className="project-copy">
                   <span className="project-date">{project.date}</span>
                   <h3>{project.title}</h3>
                   <p>{project.summary}</p>
                   <div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+                  {project.href && <span className="project-link">查看子页面</span>}
                 </div>
-              </article>
-            ))}
+              </ProjectShell>
+            );
+            })}
           </div>
         </section>
 
@@ -369,7 +422,7 @@ function DetailPage({ item }) {
       <Header detail />
       <main>
         <section className="detail-hero">
-          <img className="detail-wave" src={asset("data-wave.png")} alt="" aria-hidden="true" />
+          <img className={`detail-wave detail-wave-${item.id}`} src={asset(item.heroImage || "data-wave.png")} alt="" aria-hidden="true" />
           <a className="back-link" href="#/section/experience">返回实习经历</a>
           <div className="detail-title" data-reveal>
             <h1>{item.company}</h1>
@@ -380,7 +433,8 @@ function DetailPage({ item }) {
           <nav className="chapter-nav" aria-label="本页章节">
             <a href={`#/experience/${item.id}`} onClick={scrollTo("background")}>背景与目标</a>
             <a href={`#/experience/${item.id}`} onClick={scrollTo("actions")}>我做了什么</a>
-            <a href={`#/experience/${item.id}`} onClick={scrollTo("results")}>结果与影响</a>
+            {item.evidence && <a href={`#/experience/${item.id}`} onClick={scrollTo("evidence")}>项目拆解</a>}
+            {item.results && <a href={`#/experience/${item.id}`} onClick={scrollTo("results")}>结果与影响</a>}
             <a href={`#/experience/${item.id}`} onClick={scrollTo("reflection")}>复盘与思考</a>
           </nav>
         </section>
@@ -388,6 +442,7 @@ function DetailPage({ item }) {
         <section className="case-section" id="background">
           <div className="case-content" data-reveal>
             <span className="eyebrow">Background</span><h2>背景与目标</h2><p className="lead">{item.intro}</p>
+            {item.proofPoints && <div className="proof-grid">{item.proofPoints.map(([value, copy]) => <article key={value}><strong>{value}</strong><p>{copy}</p></article>)}</div>}
             <div className="goal-grid">{item.goals.map((goal, index) => <article key={goal}><span>0{index + 1}</span><p>{goal}</p></article>)}</div>
           </div>
         </section>
@@ -399,12 +454,55 @@ function DetailPage({ item }) {
           </div>
         </section>
 
-        <section className="case-section results-section" id="results">
-          <div className="case-content" data-reveal>
-            <span className="eyebrow">Impact</span><h2>结果与影响</h2>
-            <div className="result-grid">{item.results.map(([value, label], index) => <article className={index === 0 ? "primary-result" : ""} key={label}><strong>{value}</strong><span>{label}</span></article>)}</div>
-          </div>
-        </section>
+        {item.evidence && (
+          <section className="case-section evidence-section" id="evidence">
+            <div className="case-content" data-reveal>
+              <span className="eyebrow">Cases</span><h2>项目拆解</h2>
+              <div className="evidence-stack">
+                {item.evidence.map((entry) => (
+                  <article className={`case-breakdown case-breakdown-${entry.kind}`} key={entry.title}>
+                    <div className="case-breakdown-copy">
+                      <span className="eyebrow">{entry.eyebrow}</span>
+                      <h3>{entry.title}</h3>
+                      <p>{entry.copy}</p>
+                      {entry.details && <ul>{entry.details.map((detail) => <li key={detail}>{detail}</li>)}</ul>}
+                    </div>
+                    {entry.kind === "topic" && (
+                      <div className="topic-data-panel" aria-label="#同花顺进行曲数据表">
+                        <table>
+                          <thead><tr><th>指标</th><th>数据</th><th>说明</th></tr></thead>
+                          <tbody>{entry.dataRows.map(([label, value, note]) => <tr key={label}><td>{label}</td><td>{value}</td><td>{note}</td></tr>)}</tbody>
+                        </table>
+                        <div className="topic-bars" aria-hidden="true">
+                          <div><span>爆发前日均</span><i style={{ "--bar": "39%" }} /><strong>6,686</strong></div>
+                          <div><span>爆发后日均</span><i style={{ "--bar": "100%" }} /><strong>17,352</strong></div>
+                          <div><span>单日峰值</span><i style={{ "--bar": "132%" }} /><strong>22,866</strong></div>
+                        </div>
+                      </div>
+                    )}
+                    {entry.kind === "tool" && (
+                      <div className="tool-panel">
+                        <figure><img src={asset(entry.image)} alt={entry.alt} /></figure>
+                        <div className="tool-module-list">
+                          {entry.modules.map(([title, copy, result]) => <article key={title}><h4>{title}</h4><p>{copy}</p><span>{result}</span></article>)}
+                        </div>
+                      </div>
+                    )}
+                  </article>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {item.results && (
+          <section className="case-section results-section" id="results">
+            <div className="case-content" data-reveal>
+              <span className="eyebrow">Impact</span><h2>结果与影响</h2>
+              <div className="result-grid">{item.results.map(([value, label], index) => <article className={index === 0 ? "primary-result" : ""} key={label}><strong>{value}</strong><span>{label}</span></article>)}</div>
+            </div>
+          </section>
+        )}
 
         <section className="case-section" id="reflection">
           <div className="case-content reflection-content" data-reveal>
@@ -423,6 +521,57 @@ function DetailPage({ item }) {
   );
 }
 
+function ProjectDetailPage({ item }) {
+  useMotion();
+  return (
+    <div className="page-shell detail-page project-detail-page">
+      <div className="scroll-progress" />
+      <Header detail />
+      <main>
+        <section className="detail-hero project-detail-hero">
+          <img className="detail-wave" src={asset(item.image)} alt="" aria-hidden="true" />
+          <img className="project-decor project-decor-hero" src={asset("jellyfish-detail-decor.png")} alt="" aria-hidden="true" />
+          <div className="detail-title" data-reveal>
+            <h1>{item.title}</h1>
+            <h2>{item.subtitle}</h2>
+            <time>{item.date}</time>
+            <p>{item.summary}</p>
+            <div className="detail-actions">
+              <a className="button primary" href={item.repo} target="_blank" rel="noreferrer">查看 GitHub</a>
+              <a className="button secondary" href="#/section/projects">回到项目列表</a>
+            </div>
+          </div>
+        </section>
+
+        <section className="case-section" id="background">
+          <img className="project-decor project-decor-section" src={asset("jellyfish-detail-decor.png")} alt="" aria-hidden="true" />
+          <div className="case-content" data-reveal>
+            <span className="eyebrow">Positioning</span><h2>项目定位</h2><p className="lead">{item.intro}</p>
+            <div className="goal-grid">{item.goals.map((goal, index) => <article key={goal}><span>0{index + 1}</span><p>{goal}</p></article>)}</div>
+          </div>
+        </section>
+
+        <section className="case-section" id="workflow">
+          <div className="case-content" data-reveal>
+            <span className="eyebrow">Workflow</span><h2>工作流设计</h2>
+            <figure className="project-case-visual">
+              <img src={asset("jellyfish-xhs-news-flow.png")} alt="小水母 AI 助理从输入素材到传播价值判断、角度过滤、组图构建和自检优化的流程插画" />
+            </figure>
+            <div className="action-timeline project-action-timeline">{item.actions.map(([title, copy]) => <article key={title}><h3>{title}</h3><p>{copy}</p></article>)}</div>
+          </div>
+        </section>
+
+        <nav className="case-pagination" aria-label="项目翻页">
+          <a href="#/section/projects">返回全部项目经历</a>
+          <a href={item.repo} target="_blank" rel="noreferrer">查看项目仓库</a>
+          <a href="#/section/contact">联系我</a>
+        </nav>
+      </main>
+      <footer><span>© 2026 VITOR DAI</span><a href="mailto:vitord@qq.com">联系我</a></footer>
+    </div>
+  );
+}
+
 function NotFound() {
   return <main className="not-found"><p>这个页面暂时不存在。</p><a className="button primary" href="#/">返回首页</a></main>;
 }
@@ -430,7 +579,12 @@ function NotFound() {
 export function App() {
   const route = useHashRoute();
   const detailId = useMemo(() => route.match(/^#\/experience\/([^/]+)/)?.[1], [route]);
+  const projectId = useMemo(() => route.match(/^#\/project\/([^/]+)/)?.[1], [route]);
   const section = useMemo(() => route.match(/^#\/section\/([^/]+)/)?.[1], [route]);
+  if (projectId) {
+    const project = projects.find((entry) => entry.id === projectId);
+    return project ? <ProjectDetailPage item={project} /> : <NotFound />;
+  }
   if (!detailId) return <HomePage initialTarget={section} />;
   const item = internships.find((entry) => entry.id === detailId);
   return item ? <DetailPage item={item} /> : <NotFound />;
