@@ -57,6 +57,31 @@ const internships = [
           ["登录维护", "当抖音 cookies 失效、需要扫码或验证码时，从面板触发重新登录。", "登录完成后保存新的状态，再继续采集或重采集任务。"],
         ],
       },
+      {
+        kind: "report",
+        eyebrow: "Report SOP",
+        title: "战报制作与长图交付",
+        copy: "围绕阶段性活动、达人合作和话题传播结果，把多平台内容数据整理成可对外展示的战报长图。流程从数据采集和初筛开始，经过指标归类、案例筛选、结构排版和最终复核，让战报既能呈现声量，也能保留内容沉淀。",
+        modules: [
+          ["数据采集", "通过作品采集器或飞书表格汇总小红书、抖音、B站等渠道的作品数据，统一曝光、互动、达人账号、话题词和时间范围。"],
+          ["内容初筛", "按活动主题、达人类型、传播效果和平台审核风险筛选可入选案例，避免战报只堆数据而缺少代表性内容。"],
+          ["指标归类", "把总曝光、达人合作、矩阵账号、话题热力、传播阵列等信息拆成固定模块，确定每个模块承载的核心结论。"],
+          ["长图排版", "根据活动调性制作纵向长图，统一色彩、标题层级、截图卡片、数据标签和二维码/作品入口。"],
+          ["复核交付", "核对数据口径、截图清晰度、达人名称、二维码和时间范围，导出适合群发、汇报和归档的最终版本。"],
+        ],
+        reports: [
+          {
+            title: "同花顺品牌共同成长计划",
+            image: "ths-report-growth-plan.png",
+            alt: "同花顺品牌共同成长计划战报长图",
+          },
+          {
+            title: "ETF 新势界高校挑战赛",
+            image: "ths-report-etf-campaign.png",
+            alt: "ETF 新势界高校挑战赛战报长图",
+          },
+        ],
+      },
     ],
     reflection: "这段经历让我更明确：达人运营的核心不是把内容发出去，而是把平台、达人和用户搜索行为串成一条可验证的链路。社媒新增用户占比和抖音看后搜数据，能证明达人内容对业务增长有实际贡献；工具化沉淀则让团队把时间留给判断、沟通和复盘，而不是重复核对。",
   },
@@ -409,6 +434,7 @@ function HomePage({ initialTarget }) {
 
 function DetailPage({ item }) {
   useMotion();
+  const [openReport, setOpenReport] = useState(null);
   const current = internships.findIndex((entry) => entry.id === item.id);
   const previous = internships[(current - 1 + internships.length) % internships.length];
   const next = internships[(current + 1) % internships.length];
@@ -488,6 +514,21 @@ function DetailPage({ item }) {
                         </div>
                       </div>
                     )}
+                    {entry.kind === "report" && (
+                      <div className="report-panel">
+                        <div className="report-workflow">
+                          {entry.modules.map(([title, copy], index) => <article key={title}><span>{String(index + 1).padStart(2, "0")}</span><h4>{title}</h4><p>{copy}</p></article>)}
+                        </div>
+                        <div className="report-dock" aria-label="战报长图展示">
+                          {entry.reports.map((report) => (
+                            <button className="report-thumb" type="button" key={report.title} onClick={() => setOpenReport(report)}>
+                              <img src={asset(report.image)} alt={report.alt} />
+                              <span>{report.title}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </article>
                 ))}
               </div>
@@ -516,6 +557,14 @@ function DetailPage({ item }) {
           <a href={`#/experience/${next.id}`}>下一篇 · {next.company}</a>
         </nav>
       </main>
+      {openReport && (
+        <div className="report-lightbox" role="dialog" aria-modal="true" aria-label={openReport.title} onClick={() => setOpenReport(null)}>
+          <button className="report-lightbox-close" type="button" onClick={() => setOpenReport(null)}>关闭</button>
+          <div className="report-lightbox-viewport" onClick={(event) => event.stopPropagation()}>
+            <img src={asset(openReport.image)} alt={openReport.alt} />
+          </div>
+        </div>
+      )}
       <footer><span>© 2026 VITOR DAI</span><a href="mailto:vitord@qq.com">联系我</a></footer>
     </div>
   );

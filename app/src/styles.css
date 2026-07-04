@@ -204,6 +204,23 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
 .tool-module-list h4 { margin: 0 0 12px; font-size: 17px; font-weight: 500; }
 .tool-module-list p { margin: 0 0 14px; color: #4f5a69; font-size: 13px; line-height: 1.75; }
 .tool-module-list span { display: block; color: var(--blue); font-size: 12px; line-height: 1.7; }
+.report-panel { display: grid; gap: 28px; }
+.report-workflow { display: grid; grid-template-columns: repeat(5,1fr); border: 1px solid rgba(55,107,255,.16); border-radius: 8px; overflow: hidden; background: rgba(255,255,255,.48); }
+.report-workflow article { min-height: 230px; padding: 24px 22px; border-left: 1px solid rgba(55,107,255,.13); }
+.report-workflow article:first-child { border-left: 0; }
+.report-workflow span { color: var(--blue); font: 12px "IBM Plex Mono", monospace; }
+.report-workflow h4 { margin: 34px 0 14px; font-size: 17px; font-weight: 500; }
+.report-workflow p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.75; }
+.report-dock { display: flex; align-items: flex-end; gap: 20px; min-height: 360px; padding: 28px; border: 1px solid rgba(55,107,255,.16); border-radius: 8px; background: linear-gradient(135deg, rgba(55,107,255,.06), rgba(255,255,255,.52)); overflow-x: auto; }
+.report-thumb { flex: 0 0 158px; display: grid; gap: 14px; padding: 0; border: 0; background: transparent; color: var(--ink); text-align: left; cursor: zoom-in; transform-origin: bottom center; transition: transform .28s cubic-bezier(.2,.8,.2,1), filter .28s ease; }
+.report-dock:hover .report-thumb:not(:hover) { transform: scale(.94); filter: saturate(.86) opacity(.72); }
+.report-thumb:hover { transform: translateY(-18px) scale(1.16); z-index: 2; }
+.report-thumb img { display: block; width: 100%; height: 285px; object-fit: cover; object-position: top center; border: 1px solid rgba(55,107,255,.2); border-radius: 8px; box-shadow: 0 20px 45px rgba(28,55,110,.16); background: #fff; }
+.report-thumb span { font-size: 12px; line-height: 1.6; text-align: center; }
+.report-lightbox { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 58px 24px 34px; background: rgba(10,17,29,.72); backdrop-filter: blur(14px); }
+.report-lightbox-close { position: fixed; top: 22px; right: 24px; z-index: 1001; padding: 10px 14px; border: 1px solid rgba(255,255,255,.5); border-radius: 6px; background: rgba(255,255,255,.12); color: #fff; cursor: pointer; }
+.report-lightbox-viewport { max-height: 86vh; max-width: min(620px, 92vw); overflow: auto; border-radius: 10px; box-shadow: 0 35px 90px rgba(0,0,0,.36); background: #170708; }
+.report-lightbox-viewport img { display: block; width: min(520px, 88vw); height: auto; }
 .project-case-visual { margin: 0 0 54px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
 .project-case-visual img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
 .goal-grid { display: grid; grid-template-columns: repeat(3,1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -252,6 +269,9 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
   .proof-grid { grid-template-columns: 1fr; margin-top: -16px; }
   .case-breakdown, .case-breakdown-topic, .case-breakdown-tool { grid-template-columns: 1fr; gap: 28px; }
   .tool-module-list { grid-template-columns: 1fr; }
+  .report-workflow { grid-template-columns: 1fr 1fr; }
+  .report-workflow article { min-height: 190px; border-left: 0; border-top: 1px solid rgba(55,107,255,.13); }
+  .report-workflow article:first-child { border-top: 0; }
   .project-decor-hero { width: min(56vw, 520px); opacity: .42; }
   .project-decor-section { width: min(46vw, 360px); opacity: .36; }
   .chapter-nav { position: relative; right: auto; bottom: auto; margin-top: 50px; grid-template-columns: repeat(4,auto); }
@@ -291,6 +311,13 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
   .topic-data-panel table { min-width: 620px; }
   .topic-bars div { grid-template-columns: 78px 1fr 64px; gap: 10px; }
   .tool-module-list article { min-height: auto; padding: 20px; }
+  .report-workflow { grid-template-columns: 1fr; }
+  .report-workflow article { min-height: auto; padding: 22px; }
+  .report-workflow h4 { margin-top: 24px; }
+  .report-dock { min-height: 330px; padding: 22px; gap: 16px; }
+  .report-thumb { flex-basis: 138px; }
+  .report-thumb img { height: 250px; }
+  .report-thumb:hover { transform: translateY(-12px) scale(1.08); }
   .project-decor { opacity: .24; }
   .project-decor-hero { left: 8px; bottom: 22px; width: 74vw; }
   .project-decor-section { right: -18px; top: 28px; width: 66vw; }
