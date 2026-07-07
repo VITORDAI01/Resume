@@ -110,7 +110,7 @@ const internships = [
         eyebrow: "Campaigns",
         title: "活动策划、对接与实施",
         copy: "围绕 AI Ping 的开发者增长和高校场景触达，我参与活动方案策划、合作方沟通、福利机制设计、物料落地和发布执行，把产品权益转化成用户愿意参与的活动入口。",
-        details: ["对接清华创协与昆山杯清华大学创业大赛，为参赛队伍配置 Token 赠金权益，降低团队试用门槛。", "策划程序员节限定福利活动，结合节日节点、社群传播和二维码入口，引导开发者进群领取算力点。"],
+        details: ["对接清华创协与昆山杯清华大学创业大赛，为参赛队伍配置 Token 赠金权益，降低团队试用门槛。", "策划程序员节限定福利活动，结合节日节点、社群传播和二维码入口，引导开发者进群领取算力点。", "参与 Party Nights 共创伙伴活动的排期整理、合作露出和社群传播物料落地。"],
         activities: [
           {
             title: "清华大学创业大赛合作",
@@ -121,6 +121,12 @@ const internships = [
             title: "程序员节 Token 福利",
             image: "aiping-programmer-day.png",
             alt: "清程极智 AI Ping 程序员节送 Token 福利活动海报",
+          },
+          {
+            title: "Party Nights 共创伙伴活动",
+            image: "aiping-party-nights.jpg",
+            alt: "AI Ping Party Nights 共创伙伴活动日程长图",
+            variant: "long",
           },
         ],
       },
@@ -547,7 +553,7 @@ function DetailPage({ item }) {
                     {entry.kind === "activity" && (
                       <div className="activity-gallery" aria-label="AI Ping 活动物料展示">
                         {entry.activities.map((activity) => (
-                          <button className="activity-shot" type="button" key={activity.title} onClick={() => setOpenReport(activity)}>
+                          <button className={`activity-shot ${activity.variant ? `activity-shot-${activity.variant}` : ""}`} type="button" key={activity.title} onClick={() => setOpenReport(activity)}>
                             <img src={asset(activity.image)} alt={activity.alt} />
                             <span>{activity.title}</span>
                           </button>
