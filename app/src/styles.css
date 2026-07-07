@@ -159,6 +159,7 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
 .detail-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
 .detail-wave { position: absolute; z-index: 0; width: 870px; right: -80px; bottom: -140px; opacity: .62; mix-blend-mode: multiply; pointer-events: none; }
 .detail-wave-ths { inset: 0; width: 100%; height: 100%; opacity: .68; object-fit: cover; object-position: center; }
+.detail-wave-aiping { inset: 0; width: 100%; height: 100%; opacity: .5; object-fit: cover; object-position: center; mix-blend-mode: normal; }
 .project-detail-hero .detail-wave { width: min(58vw, 740px); right: max(24px, calc((100% - var(--max)) / 2)); bottom: 58px; opacity: .36; object-fit: contain; }
 .project-decor { position: absolute; z-index: 1; display: block; pointer-events: none; user-select: none; object-fit: contain; opacity: .64; mix-blend-mode: multiply; }
 .project-decor-hero { left: max(22px, calc((100% - var(--max)) / 2)); bottom: 38px; width: min(46vw, 560px); }
@@ -266,6 +267,7 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
   .project-row { grid-template-columns: 1fr; }.project-image { max-height: 420px; }
   .detail-hero, .case-section { padding-left: 24px; padding-right: 24px; }
   .detail-wave-ths { inset: 0; width: 100%; height: 100%; opacity: .5; object-position: 58% center; }
+  .detail-wave-aiping { opacity: .42; object-position: 58% center; }
   .proof-grid { grid-template-columns: 1fr; margin-top: -16px; }
   .case-breakdown, .case-breakdown-topic, .case-breakdown-tool { grid-template-columns: 1fr; gap: 28px; }
   .tool-module-list { grid-template-columns: 1fr; }
@@ -305,6 +307,7 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
   footer { gap: 20px; padding: 30px 16px; }
   .detail-hero { min-height: 620px; padding: 120px 16px 65px; }.detail-title h1 { font-size: 48px; }.detail-wave { width: 650px; opacity: .35; }
   .detail-wave-ths { inset: 0; width: 100%; height: 100%; opacity: .34; object-position: 64% center; }
+  .detail-wave-aiping { inset: 0; width: 100%; height: 100%; opacity: .3; object-position: 68% center; }
   .proof-grid article { min-height: auto; padding: 22px; }
   .case-breakdown { padding-top: 30px; }
   .topic-data-panel { overflow-x: auto; }

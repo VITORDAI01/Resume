@@ -91,6 +91,7 @@ const internships = [
     company: "清程极智 / AI Ping",
     logo: "aiping-logo.svg",
     logoAlt: "AI Ping 标志",
+    heroImage: "aiping-hero-bg.png",
     role: "产品运营实习生",
     period: "2025.08 — 2025.11",
     summary: "参与产品全生命周期运营，以用户研究推动体验优化，并搭建内容与增长活动体系。",
