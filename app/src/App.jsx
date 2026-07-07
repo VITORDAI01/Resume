@@ -99,10 +99,12 @@ const internships = [
     intro: "AI Ping 是面向开发者的大模型算力平台，我的工作目标不是只做曝光，而是围绕日均 Token 调用量提升，把产品内测、用户反馈、品牌内容和增长活动连接成可转化的运营链路。",
     goals: ["搭建产品内测体系并明确核心用户画像", "降低开发者从了解产品到实际调用的迁移成本", "用品牌内容、公众号发布和增长活动推动真实调用量提升"],
     actions: [
-      ["定向招募", "通过开发者社区招募 20 名目标用户，覆盖个人开发者与企业客户。"],
-      ["问卷 + 深访", "收集使用反馈，识别跳转链路、延迟评测和模型迁移中的关键问题。"],
-      ["推动优化", "提出跳转路径简化、P90 延迟评测等方案，并推动落地至正式版本。"],
-      ["品牌内容与增长实验", "负责品牌相关公众号内容发布，运营内容矩阵，联动外部渠道，并以热门模型限免降低首次使用门槛，服务日均 Token 调用量增长。"],
+      ["指标拆解", "把运营目标从曝光和注册进一步落到日均 Token 调用量，关注开发者从了解产品、领取权益到首次调用和持续消耗的完整路径。"],
+      ["定向招募", "通过开发者社区招募 20 名目标用户，覆盖个人开发者与企业客户，为内测反馈和核心用户画像提供样本。"],
+      ["问卷 + 深访", "收集真实使用反馈，识别跳转链路、延迟评测、模型迁移、Token 成本感知和首次调用门槛等关键问题。"],
+      ["产品优化协同", "提出跳转路径简化、P90 延迟评测等优化方向，把用户调研结论转成产品需求，并推动落地至正式版本。"],
+      ["品牌内容发布", "负责品牌相关公众号内容发布，把算力平台、模型能力、限免权益和使用教程转译成开发者能理解、愿意尝试的内容。"],
+      ["增长活动落地", "联动清华创协、程序员节、Party Nights 等外部场景，完成权益设计、物料发布和社群承接，服务真实调用量增长。"],
     ],
     evidence: [
       {
@@ -499,7 +501,7 @@ function DetailPage({ item }) {
         <section className="case-section" id="actions">
           <div className="case-content" data-reveal>
             <span className="eyebrow">Actions</span><h2>我做了什么</h2>
-            <div className="action-timeline">{item.actions.map(([title, copy], index) => <article key={title}><span>{index + 1}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
+            <div className={`action-timeline ${item.id === "aiping" ? "action-timeline-rich" : ""}`}>{item.actions.map(([title, copy], index) => <article key={title}><span>{index + 1}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
           </div>
         </section>
 

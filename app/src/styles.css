@@ -237,6 +237,7 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
 .goal-grid span { color: var(--blue); font: 12px "IBM Plex Mono", monospace; }
 .goal-grid p { margin: 35px 0 0; font-size: 14px; line-height: 1.8; }
 .action-timeline { display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid rgba(55,107,255,.35); }
+.action-timeline-rich { grid-template-columns: repeat(3,1fr); row-gap: 54px; }
 .action-timeline article { position: relative; padding: 38px 30px 0 0; }
 .action-timeline article::before { content: ""; position: absolute; top: -4px; left: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 6px var(--bg); }
 .action-timeline span { color: var(--blue); font: 12px "IBM Plex Mono", monospace; }
@@ -288,6 +289,7 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
   .project-decor-section { width: min(46vw, 360px); opacity: .36; }
   .chapter-nav { position: relative; right: auto; bottom: auto; margin-top: 50px; grid-template-columns: repeat(4,auto); }
   .action-timeline { grid-template-columns: 1fr 1fr; row-gap: 45px; }
+  .action-timeline-rich { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 650px) {
