@@ -116,11 +116,13 @@ const internships = [
             title: "清华大学创业大赛合作",
             image: "aiping-tsinghua-startup.png",
             alt: "AI Ping 为昆山杯清华大学创业大赛参赛队伍提供 Token 赠金的活动横幅",
+            variant: "wide",
           },
           {
             title: "程序员节 Token 福利",
             image: "aiping-programmer-day.png",
             alt: "清程极智 AI Ping 程序员节送 Token 福利活动海报",
+            variant: "poster",
           },
           {
             title: "Party Nights 共创伙伴活动",
