@@ -104,6 +104,27 @@ const internships = [
       ["推动优化", "提出跳转路径简化、P90 延迟评测等方案，并推动落地至正式版本。"],
       ["增长实验", "运营内容矩阵，联动外部渠道，并以热门模型限免降低首次使用门槛。"],
     ],
+    evidence: [
+      {
+        kind: "activity",
+        eyebrow: "Campaigns",
+        title: "活动策划、对接与实施",
+        copy: "围绕 AI Ping 的开发者增长和高校场景触达，我参与活动方案策划、合作方沟通、福利机制设计、物料落地和发布执行，把产品权益转化成用户愿意参与的活动入口。",
+        details: ["对接清华创协与昆山杯清华大学创业大赛，为参赛队伍配置 Token 赠金权益，降低团队试用门槛。", "策划程序员节限定福利活动，结合节日节点、社群传播和二维码入口，引导开发者进群领取算力点。"],
+        activities: [
+          {
+            title: "清华大学创业大赛合作",
+            image: "aiping-tsinghua-startup.png",
+            alt: "AI Ping 为昆山杯清华大学创业大赛参赛队伍提供 Token 赠金的活动横幅",
+          },
+          {
+            title: "程序员节 Token 福利",
+            image: "aiping-programmer-day.png",
+            alt: "清程极智 AI Ping 程序员节送 Token 福利活动海报",
+          },
+        ],
+      },
+    ],
     reflection: "用户研究不是起点处的一次确认，而是连接产品优化与增长策略的持续机制。真正有效的增长动作，通常来自对迁移成本和使用习惯的具体理解。",
   },
   {
@@ -521,6 +542,16 @@ function DetailPage({ item }) {
                             </button>
                           ))}
                         </div>
+                      </div>
+                    )}
+                    {entry.kind === "activity" && (
+                      <div className="activity-gallery" aria-label="AI Ping 活动物料展示">
+                        {entry.activities.map((activity) => (
+                          <button className="activity-shot" type="button" key={activity.title} onClick={() => setOpenReport(activity)}>
+                            <img src={asset(activity.image)} alt={activity.alt} />
+                            <span>{activity.title}</span>
+                          </button>
+                        ))}
                       </div>
                     )}
                   </article>
