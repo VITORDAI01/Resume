@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { AskVitor } from "./AskVitor.jsx";
 
 const base = import.meta.env.BASE_URL;
 const asset = (name) => `${base}assets/${name}`;
@@ -434,6 +435,15 @@ function HomePage({ initialTarget }) {
               <a className="button primary" href="#education">了解我的经历</a>
               <a className="button secondary" href={`${base}Vitor-Dai-Resume.pdf`} target="_blank" rel="noreferrer">下载简历</a>
             </div>
+            <button
+              className="hero-ai-invite"
+              type="button"
+              onClick={() => window.dispatchEvent(new Event("ask-vitor:open"))}
+            >
+              <span className="hero-ai-orb">V</span>
+              <span className="hero-ai-copy"><strong>想了解我更多？</strong><small>点击和我的 AI 分身聊聊</small></span>
+              <span className="hero-ai-arrow" aria-hidden="true">↗</span>
+            </button>
           </div>
           <div className="hero-visual">
             <figure className="portrait-frame">
@@ -865,11 +875,15 @@ export function App() {
   const detailId = useMemo(() => route.match(/^#\/experience\/([^/]+)/)?.[1], [route]);
   const projectId = useMemo(() => route.match(/^#\/project\/([^/]+)/)?.[1], [route]);
   const section = useMemo(() => route.match(/^#\/section\/([^/]+)/)?.[1], [route]);
+  let page;
   if (projectId) {
     const project = projects.find((entry) => entry.id === projectId);
-    return project ? <ProjectDetailPage item={project} /> : <NotFound />;
+    page = project ? <ProjectDetailPage item={project} /> : <NotFound />;
+  } else if (!detailId) {
+    page = <HomePage initialTarget={section} />;
+  } else {
+    const item = internships.find((entry) => entry.id === detailId);
+    page = item ? <DetailPage item={item} /> : <NotFound />;
   }
-  if (!detailId) return <HomePage initialTarget={section} />;
-  const item = internships.find((entry) => entry.id === detailId);
-  return item ? <DetailPage item={item} /> : <NotFound />;
+  return <>{page}<AskVitor /></>;
 }
