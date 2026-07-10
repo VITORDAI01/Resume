@@ -1,9 +1,27 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "ask-vitor-api",
+  "account_id": "a7d7434170d175a16815ea9a79fa94cc",
   "main": "worker/index.mjs",
   "compatibility_date": "2026-07-09",
   "workers_dev": true,
+  "vars": {
+    "DAILY_REQUEST_LIMIT": "100"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "DAILY_LIMITER",
+        "class_name": "DailyRequestLimiter"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["DailyRequestLimiter"]
+    }
+  ],
   "secrets": {
     "required": ["AIPING_API_KEY"]
   }

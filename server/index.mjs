@@ -9,6 +9,8 @@ await loadLocalEnv(root);
 const apiKey = process.env.AIPING_API_KEY;
 if (!apiKey) throw new Error("缺少 AIPING_API_KEY。");
 
+const outOfScopeReply = "这个问题我暂时没法回答哟。你可以问问我的实习经历、项目、研究方向，或者我为什么适合 AI 产品运营。";
+
 const index = JSON.parse(await readFile(resolve(root, "knowledge/index.json"), "utf8"));
 const port = Number(process.env.AGENT_API_PORT || 8787);
 const allowedOrigins = new Set([
@@ -216,7 +218,11 @@ const server = createServer(async (req, res) => {
       excerpt: text.slice(0, 150),
       score: Number(score.toFixed(4)),
     })));
-    await streamAnswer(res, question, history, sources);
+    if (sources.length === 0) {
+      sendEvent(res, "token", { token: outOfScopeReply });
+    } else {
+      await streamAnswer(res, question, history, sources);
+    }
     sendEvent(res, "done", { ok: true });
     res.end();
   } catch (error) {

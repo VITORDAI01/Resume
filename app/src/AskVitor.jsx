@@ -117,9 +117,11 @@ export function AskVitor() {
         }
       }
     } catch (error) {
+      const expectedLimit = error.message.startsWith("请求过于频繁")
+        || error.message.startsWith("今天的 AI 咨询次数");
       setMessages((current) => current.map((message) => (
         message.id === assistantId
-          ? { ...message, content: `暂时无法完成回答：${error.message}`, sources: [] }
+          ? { ...message, content: expectedLimit ? error.message : `暂时无法完成回答：${error.message}`, sources: [] }
           : message
       )));
     } finally {

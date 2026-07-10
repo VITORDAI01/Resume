@@ -1,6 +1,9 @@
+import { DurableObject } from "cloudflare:workers";
 import index from "../knowledge/index.json";
 
 const AIPING_BASE_URL = "https://aiping.cn/api/v1";
+const DEFAULT_DAILY_REQUEST_LIMIT = 100;
+const outOfScopeReply = "这个问题我暂时没法回答哟。你可以问问我的实习经历、项目、研究方向，或者我为什么适合 AI 产品运营。";
 const allowedOrigins = new Set([
   "https://vitordai01.github.io",
   "http://127.0.0.1:5173",
@@ -9,6 +12,29 @@ const allowedOrigins = new Set([
   "http://localhost:4173",
 ]);
 const requestBuckets = new Map();
+
+export class DailyRequestLimiter extends DurableObject {
+  constructor(context, env) {
+    super(context, env);
+    this.sql = context.storage.sql;
+    this.sql.exec("CREATE TABLE IF NOT EXISTS daily_usage (usage_date TEXT PRIMARY KEY, request_count INTEGER NOT NULL)");
+  }
+
+  consume(usageDate, limit) {
+    this.sql.exec("DELETE FROM daily_usage WHERE usage_date < ?", usageDate);
+    const current = [...this.sql.exec(
+      "SELECT request_count FROM daily_usage WHERE usage_date = ?",
+      usageDate,
+    )][0];
+    const count = Number(current?.request_count || 0);
+    if (count >= limit) return { allowed: false, count, limit };
+    this.sql.exec(
+      "INSERT INTO daily_usage (usage_date, request_count) VALUES (?, 1) ON CONFLICT (usage_date) DO UPDATE SET request_count = request_count + 1",
+      usageDate,
+    );
+    return { allowed: true, count: count + 1, limit };
+  }
+}
 
 function corsHeaders(origin) {
   const headers = {
@@ -42,6 +68,16 @@ function allowRequest(ip) {
   if (current.count >= 8) return false;
   current.count += 1;
   return true;
+}
+
+function shanghaiDate() {
+  return new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10);
+}
+
+async function consumeDailyBudget(env) {
+  const limit = Number(env.DAILY_REQUEST_LIMIT || DEFAULT_DAILY_REQUEST_LIMIT);
+  const limiter = env.DAILY_LIMITER.getByName("global");
+  return limiter.consume(shanghaiDate(), limit);
 }
 
 function cosineSimilarity(a, b) {
@@ -158,6 +194,12 @@ async function streamEvents(writer, apiKey, question, history, sources) {
       score: Number(score.toFixed(4)),
     })));
 
+    if (sources.length === 0) {
+      await send("token", { token: outOfScopeReply });
+      await send("done", { ok: true });
+      return;
+    }
+
     const upstream = await createAnswer(apiKey, question, history, sources);
     const reader = upstream.getReader();
     const decoder = new TextDecoder();
@@ -208,6 +250,11 @@ async function handleChat(request, env, origin, context) {
     return json(400, { error: "问题不能为空，且不能超过 800 字。" }, origin);
   }
 
+  const dailyBudget = await consumeDailyBudget(env);
+  if (!dailyBudget.allowed) {
+    return json(429, { error: "今天的 AI 咨询次数已经用完啦，请明天再来问我。" }, origin);
+  }
+
   const queryEmbedding = await embed(env.AIPING_API_KEY, question);
   if (!queryEmbedding) throw new Error("问题向量响应无效。");
   const sources = retrieve(queryEmbedding);
@@ -240,6 +287,7 @@ export default {
         embeddingModel: index.model,
         chunks: index.chunks.length,
         dimension: index.dimension,
+        dailyRequestLimit: Number(env.DAILY_REQUEST_LIMIT || DEFAULT_DAILY_REQUEST_LIMIT),
       }, origin);
     }
     if (request.method !== "POST" || url.pathname !== "/api/chat") {
