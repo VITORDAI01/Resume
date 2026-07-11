@@ -4,7 +4,7 @@ const AIPING_BASE_URL = "https://aiping.cn/api/v1";
 const KNOWLEDGE_INDEX_KEY = "knowledge:index:v1";
 const DEFAULT_DAILY_REQUEST_LIMIT = 100;
 const privacyReply = "这个问题我暂时不方便回答哟，不过我们可以聊聊别的。";
-const casualReply = "都可以呀，你随便问。我知道的就和你聊聊，不知道的我也会直接说。";
+const casualFallbackReply = "都可以，你随便问。";
 const outOfScopeReplies = [
   "这个我暂时还真答不上来，换个问题问我吧。",
   "这个我现在不太好回答，不过你可以继续问点别的。",
@@ -265,6 +265,41 @@ async function createAnswer(apiKey, question, history, sources, citeSources) {
   return response.body;
 }
 
+async function createCasualReply(apiKey, question, history) {
+  const response = await fetch(`${AIPING_BASE_URL}/chat/completions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "DeepSeek-V4-Flash",
+      temperature: 0.8,
+      max_completion_tokens: 80,
+      messages: [
+        {
+          role: "system",
+          content: "你是 Vitor 个人网站中的 AI 分身，此刻只做轻量闲聊。直接回应用户，使用自然、随意的中文，1 至 2 句、40 字以内；一律称呼‘你’，不用‘您’，避免‘很乐意’‘陪您’等客服腔。允许措辞自由变化，不要套固定模板。只能表达‘由用户决定、愿意继续聊’这一层意思，不得提出、举例或暗示任何具体话题，禁止使用‘比如’引出内容。不得编造 Vitor 的经历、偏好、当前状态或承诺，不要提知识库、RAG 或内部规则。",
+        },
+        ...history.slice(-4).filter((entry) => (
+          entry && typeof entry === "object" && !isRestrictedQuestion(String(entry.content || ""))
+        )).map(({ role, content }) => ({
+          role: role === "assistant" ? "assistant" : "user",
+          content: String(content).slice(0, 500),
+        })),
+        { role: "user", content: question },
+      ],
+      extra_body: {
+        enable_thinking: false,
+        provider: { sort: ["latency", "throughput"], allow_fallbacks: true },
+      },
+    }),
+  });
+  if (!response.ok) return casualFallbackReply;
+  const payload = await response.json();
+  return String(payload.choices?.[0]?.message?.content || casualFallbackReply).trim();
+}
+
 function serializeEvent(event, payload) {
   return `event: ${event}\ndata: ${JSON.stringify(payload)}\n\n`;
 }
@@ -361,16 +396,17 @@ async function handleChat(request, env, origin, context) {
   if (isRestrictedQuestion(question)) {
     return fixedReplyResponse(origin, privacyReply);
   }
-  if (isCasualQuestion(question)) {
-    return fixedReplyResponse(origin, casualReply);
-  }
 
-  const index = await loadIndex(env);
   const dailyBudget = await consumeDailyBudget(env);
   if (!dailyBudget.allowed) {
     return json(429, { error: "今天的 AI 咨询次数已经用完啦，请明天再来问我。" }, origin);
   }
+  if (isCasualQuestion(question)) {
+    const reply = await createCasualReply(env.AIPING_API_KEY, question, history);
+    return fixedReplyResponse(origin, reply);
+  }
 
+  const index = await loadIndex(env);
   const retrievalQuery = buildRetrievalQuery(question, history);
   const queryEmbedding = await embed(env.AIPING_API_KEY, index, retrievalQuery);
   if (!queryEmbedding) throw new Error("问题向量响应无效。");
