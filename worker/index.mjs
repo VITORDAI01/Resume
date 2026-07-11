@@ -3,6 +3,12 @@ import { DurableObject } from "cloudflare:workers";
 const AIPING_BASE_URL = "https://aiping.cn/api/v1";
 const KNOWLEDGE_INDEX_KEY = "knowledge:index:v1";
 const DEFAULT_DAILY_REQUEST_LIMIT = 100;
+const experienceOverviewSourceIds = ["ths-overview", "aiping-overview", "youdao-overview"];
+const experienceOverviewTexts = {
+  "ths-overview": "2026 年 3 月至 2026 年 8 月，我在同花顺担任产品运营实习生，方向为达人运营。我从 0 到 1 规划并搭建达人运营中台，工作覆盖达人筛选与 BD、选题共创、发布跟进、校园社群维护、数据回收和复盘。",
+  "aiping-overview": "2025 年 8 月至 2026 年 2 月，我在清程极智 AI Ping 担任产品运营实习生，参与面向开发者的大模型算力平台全生命周期运营，工作涉及产品内测、用户反馈、产品优化、品牌内容和增长活动。",
+  "youdao-overview": "2024 年 2 月至 2024 年 6 月，我在网易有道升学中心 OMO 项目组担任新媒体运营实习生。在没有投流预算的情况下，从 0 到 1 冷启动南京、大同、宁波、武汉四个地方微信视频号和一个全国微信视频号。",
+};
 const privacyReply = "这个问题我暂时不方便回答哟，不过我们可以聊聊别的。";
 const casualFallbackReply = "都可以，你随便问。";
 const unknownFallbackReplies = [
@@ -150,6 +156,13 @@ function questionMatchBoost(question, chunk) {
   return chunk.questions.some((candidate) => normalizeQuestion(candidate) === normalized) ? 0.12 : 0;
 }
 
+function isExperienceOverviewQuestion(question) {
+  const normalized = normalizeQuestion(question);
+  if (/失败|挫折|难熬|难忘|印象最深|最深刻|具体/.test(normalized)) return false;
+  return /(?:有哪些|有什么|做过哪些|做过什么).{0,12}(?:实习|工作)?经历/.test(normalized)
+    || /(?:介绍|聊聊|说说).{0,8}(?:你的|一下你的|一下)?(?:实习|工作)经历/.test(normalized);
+}
+
 function buildRetrievalQuery(question, history) {
   const isFollowUp = /^(那|那么|这个|这件事|它|后来|然后|其中|结果|还有|再说说|展开说说|具体呢)/.test(question)
     || /它|这件事|这个项目|这段经历|那次|后来/.test(question);
@@ -167,6 +180,17 @@ function shouldCiteSources(question, sources) {
 }
 
 function retrieve(index, queryEmbedding, question, limit = 5) {
+  if (isExperienceOverviewQuestion(question)) {
+    return experienceOverviewSourceIds
+      .map((id) => index.chunks.find((chunk) => chunk.id === id))
+      .filter(Boolean)
+      .map((chunk) => ({
+        ...chunk,
+        text: experienceOverviewTexts[chunk.id] || chunk.text,
+        score: cosineSimilarity(queryEmbedding, chunk.embedding),
+      }))
+      .map(({ embedding, ...chunk }) => chunk);
+  }
   const ranked = index.chunks
     .map((chunk) => ({
       ...chunk,
