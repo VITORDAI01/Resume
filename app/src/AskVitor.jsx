@@ -5,6 +5,10 @@ const suggestions = [
   "介绍一下你自己",
   "你有哪些值得聊聊的经历？",
 ];
+const minPanelWidth = 380;
+const minPanelHeight = 460;
+const maxPanelWidth = 760;
+const maxPanelHeight = 820;
 
 function sourceLabel(index) {
   return `S${index + 1}`;
@@ -54,11 +58,14 @@ export function AskVitor() {
   const [messages, setMessages] = useState([]);
   const [status, setStatus] = useState("idle");
   const [panelPosition, setPanelPosition] = useState(null);
+  const [panelSize, setPanelSize] = useState(null);
   const [dragging, setDragging] = useState(false);
+  const [resizing, setResizing] = useState(false);
   const endRef = useRef(null);
   const inputRef = useRef(null);
   const panelRef = useRef(null);
   const dragRef = useRef(null);
+  const resizeRef = useRef(null);
 
   const busy = status !== "idle";
 
@@ -84,22 +91,42 @@ export function AskVitor() {
     const keepPanelVisible = () => {
       if (window.innerWidth <= 650) {
         dragRef.current = null;
+        if (resizeRef.current) {
+          window.removeEventListener("pointermove", resizeRef.current.onMove);
+          window.removeEventListener("pointerup", resizeRef.current.onEnd);
+          window.removeEventListener("pointercancel", resizeRef.current.onEnd);
+        }
+        resizeRef.current = null;
         setDragging(false);
+        setResizing(false);
         setPanelPosition(null);
+        setPanelSize(null);
         return;
       }
+      if (!panelRef.current) return;
+      const rect = panelRef.current.getBoundingClientRect();
+      const margin = 12;
+      const width = Math.min(rect.width, window.innerWidth - margin * 2);
+      const height = Math.min(rect.height, window.innerHeight - margin * 2);
+      setPanelSize((current) => current ? { width, height } : current);
       setPanelPosition((current) => {
-        if (!current || !panelRef.current) return current;
-        const rect = panelRef.current.getBoundingClientRect();
+        if (!current) return current;
         const margin = 12;
         return {
-          x: Math.min(Math.max(current.x, margin), Math.max(margin, window.innerWidth - rect.width - margin)),
-          y: Math.min(Math.max(current.y, margin), Math.max(margin, window.innerHeight - rect.height - margin)),
+          x: Math.min(Math.max(current.x, margin), Math.max(margin, window.innerWidth - width - margin)),
+          y: Math.min(Math.max(current.y, margin), Math.max(margin, window.innerHeight - height - margin)),
         };
       });
     };
     window.addEventListener("resize", keepPanelVisible);
-    return () => window.removeEventListener("resize", keepPanelVisible);
+    return () => {
+      window.removeEventListener("resize", keepPanelVisible);
+      if (resizeRef.current) {
+        window.removeEventListener("pointermove", resizeRef.current.onMove);
+        window.removeEventListener("pointerup", resizeRef.current.onEnd);
+        window.removeEventListener("pointercancel", resizeRef.current.onEnd);
+      }
+    };
   }, []);
 
   function startDrag(event) {
@@ -139,6 +166,67 @@ export function AskVitor() {
     setDragging(false);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }
+
+  function startResize(event) {
+    if (event.button !== 0 || window.innerWidth <= 650) return;
+    const rect = panelRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const resize = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originTop: rect.top,
+      originRight: rect.right,
+      originWidth: rect.width,
+      originHeight: rect.height,
+      captureTarget: event.currentTarget,
+    };
+    resize.onMove = (moveEvent) => moveResize(moveEvent);
+    resize.onEnd = (endEvent) => stopResize(endEvent);
+    resizeRef.current = resize;
+    window.addEventListener("pointermove", resize.onMove);
+    window.addEventListener("pointerup", resize.onEnd);
+    window.addEventListener("pointercancel", resize.onEnd);
+    setPanelPosition({ x: rect.left, y: rect.top });
+    setPanelSize({ width: rect.width, height: rect.height });
+    setResizing(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function moveResize(event) {
+    const resize = resizeRef.current;
+    if (!resize || resize.pointerId !== event.pointerId) return;
+    const margin = 12;
+    const availableWidth = Math.max(120, resize.originRight - margin);
+    const availableHeight = Math.max(120, window.innerHeight - resize.originTop - margin);
+    const minimumWidth = Math.min(minPanelWidth, availableWidth);
+    const minimumHeight = Math.min(minPanelHeight, availableHeight);
+    const width = Math.min(
+      Math.max(resize.originWidth - (event.clientX - resize.startX), minimumWidth),
+      Math.min(maxPanelWidth, availableWidth),
+    );
+    const height = Math.min(
+      Math.max(resize.originHeight + event.clientY - resize.startY, minimumHeight),
+      Math.min(maxPanelHeight, availableHeight),
+    );
+    setPanelPosition({ x: resize.originRight - width, y: resize.originTop });
+    setPanelSize({ width, height });
+  }
+
+  function stopResize(event) {
+    const resize = resizeRef.current;
+    if (!resize || resize.pointerId !== event.pointerId) return;
+    window.removeEventListener("pointermove", resize.onMove);
+    window.removeEventListener("pointerup", resize.onEnd);
+    window.removeEventListener("pointercancel", resize.onEnd);
+    resizeRef.current = null;
+    setResizing(false);
+    if (resize.captureTarget.hasPointerCapture(event.pointerId)) {
+      resize.captureTarget.releasePointerCapture(event.pointerId);
     }
   }
 
@@ -214,6 +302,19 @@ export function AskVitor() {
     ask();
   }
 
+  const panelClassName = ["ask-panel", dragging && "is-dragging", resizing && "is-resizing"]
+    .filter(Boolean)
+    .join(" ");
+  const panelStyle = panelPosition ? {
+    position: "fixed",
+    left: panelPosition.x,
+    top: panelPosition.y,
+    right: "auto",
+    bottom: "auto",
+    transform: "none",
+    ...(panelSize ? { width: panelSize.width, height: panelSize.height } : {}),
+  } : undefined;
+
   return (
     <div className={open ? "ask-vitor is-open" : "ask-vitor"}>
       <button className="ask-launcher" type="button" aria-expanded={open} onClick={() => setOpen(!open)}>
@@ -224,17 +325,10 @@ export function AskVitor() {
       {open && (
         <section
           ref={panelRef}
-          className={dragging ? "ask-panel is-dragging" : "ask-panel"}
+          className={panelClassName}
           role="dialog"
           aria-label="问问 Vitor"
-          style={panelPosition ? {
-            position: "fixed",
-            left: panelPosition.x,
-            top: panelPosition.y,
-            right: "auto",
-            bottom: "auto",
-            transform: "none",
-          } : undefined}
+          style={panelStyle}
         >
           <header
             className="ask-header"
@@ -289,6 +383,13 @@ export function AskVitor() {
             <strong>AI 提示</strong>
             <span>AI 生成内容可能有误；重要信息请以简历或本人确认为准。</span>
           </aside>
+          <button
+            className="ask-resize-handle"
+            type="button"
+            aria-label="调整对话框大小"
+            title="拖动调整大小"
+            onPointerDown={startResize}
+          />
         </section>
       )}
     </div>
