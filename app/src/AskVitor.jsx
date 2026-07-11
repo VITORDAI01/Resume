@@ -2,10 +2,8 @@ import { useEffect, useRef, useState } from "react";
 
 const apiBase = import.meta.env.VITE_AGENT_API_URL || "http://127.0.0.1:8787";
 const suggestions = [
-  "你在同花顺具体做了什么？",
-  "Multi-agent 协作体系是怎么设计的？",
-  "哪些经历证明你适合 AI 产品运营？",
-  "你的研究和产品实践有什么关系？",
+  "介绍一下你自己",
+  "你有哪些值得聊聊的经历？",
 ];
 
 function sourceLabel(index) {
