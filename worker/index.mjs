@@ -3,8 +3,19 @@ import { DurableObject } from "cloudflare:workers";
 const AIPING_BASE_URL = "https://aiping.cn/api/v1";
 const KNOWLEDGE_INDEX_KEY = "knowledge:index:v1";
 const DEFAULT_DAILY_REQUEST_LIMIT = 100;
-const outOfScopeReply = "这个问题我暂时没法回答哟，不过我们可以聊聊别的。";
 const privacyReply = "这个问题我暂时不方便回答哟，不过我们可以聊聊别的。";
+const casualReply = "都可以呀，你随便问。我知道的就和你聊聊，不知道的我也会直接说。";
+const outOfScopeReplies = [
+  "这个我暂时还真答不上来，换个问题问我吧。",
+  "这个我现在不太好回答，不过你可以继续问点别的。",
+  "这个我目前知道得不够多，就不乱说了。换个话题聊聊吧。",
+];
+const casualQuestionPatterns = [
+  /^(?:那)?你想聊(?:啥|什么)[？?]?$/i,
+  /^(?:那)?聊点(?:啥|什么)[？?]?$/i,
+  /^(?:和我)?随便聊聊(?:吧)?[。！!？?]?$/i,
+  /^(?:你)?有什么想说的[？?]?$/i,
+];
 const restrictedQuestionPatterns = [
   /恋爱|感情状况|情感状况|对象|男朋友|女朋友|单身|结婚|婚姻|前任|约会|喜欢谁|有喜欢的人|喜欢的女生|喜欢的男生/i,
   /父母|爸妈|爸爸|妈妈|家人|家里人|兄弟姐妹|家庭背景|家庭情况|家庭收入|家里收入|家庭成员|家庭隐私|家庭住址|家里做什么/i,
@@ -103,6 +114,15 @@ function shanghaiDate() {
 
 function isRestrictedQuestion(question) {
   return restrictedQuestionPatterns.some((pattern) => pattern.test(question));
+}
+
+function isCasualQuestion(question) {
+  return casualQuestionPatterns.some((pattern) => pattern.test(question));
+}
+
+function outOfScopeReply(question) {
+  const checksum = Array.from(question).reduce((total, character) => total + character.codePointAt(0), 0);
+  return outOfScopeReplies[checksum % outOfScopeReplies.length];
 }
 
 async function consumeDailyBudget(env) {
@@ -278,7 +298,7 @@ async function streamEvents(writer, apiKey, question, history, sources, citeSour
     })));
 
     if (sources.length === 0) {
-      await send("token", { token: outOfScopeReply });
+      await send("token", { token: outOfScopeReply(question) });
       await send("done", { ok: true });
       return;
     }
@@ -340,6 +360,9 @@ async function handleChat(request, env, origin, context) {
 
   if (isRestrictedQuestion(question)) {
     return fixedReplyResponse(origin, privacyReply);
+  }
+  if (isCasualQuestion(question)) {
+    return fixedReplyResponse(origin, casualReply);
   }
 
   const index = await loadIndex(env);
