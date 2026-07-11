@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .env.local
+knowledge/private/
 .wrangler/
 .DS_Store
 .npmrc

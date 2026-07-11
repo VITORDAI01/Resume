@@ -8,6 +8,12 @@
   "vars": {
     "DAILY_REQUEST_LIMIT": "100"
   },
+  "kv_namespaces": [
+    {
+      "binding": "KNOWLEDGE_KV",
+      "id": "5cc0fed854b24963bd60ce23833f1ef0"
+    }
+  ],
   "durable_objects": {
     "bindings": [
       {

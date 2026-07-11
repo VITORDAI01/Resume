@@ -482,11 +482,12 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
 .ask-message-user .ask-message-copy { max-width: 88%; color: #fff; background: #376bff; border-color: #376bff; }
 .ask-sources { display: grid; gap: 7px; padding-top: 4px; }
 .ask-sources > span { color: var(--muted); font: 10px "IBM Plex Mono", monospace; letter-spacing: .1em; }
-.ask-sources a { display: grid; grid-template-columns: 32px 1fr; gap: 2px 9px; align-items: center; padding: 10px 12px; border: 1px solid rgba(55,107,255,.13); border-radius: 7px; color: inherit; background: rgba(55,107,255,.035); text-decoration: none; }
-.ask-sources a:hover { border-color: rgba(55,107,255,.32); background: rgba(55,107,255,.07); }
-.ask-sources strong { grid-row: 1 / 3; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: var(--blue); background: rgba(55,107,255,.1); font: 10px "IBM Plex Mono", monospace; }
-.ask-sources a > span { font-size: 12.5px; font-weight: 500; }
-.ask-sources small { color: var(--muted); font-size: 10.5px; }
+.ask-source { display: grid; grid-template-columns: 32px 1fr; gap: 2px 9px; align-items: center; padding: 10px 12px; border: 1px solid rgba(55,107,255,.13); border-radius: 7px; color: inherit; background: rgba(55,107,255,.035); text-decoration: none; }
+.ask-sources a.ask-source:hover { border-color: rgba(55,107,255,.32); background: rgba(55,107,255,.07); }
+.ask-source strong { grid-row: 1 / 3; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; color: var(--blue); background: rgba(55,107,255,.1); font: 10px "IBM Plex Mono", monospace; }
+.ask-source > span { font-size: 12.5px; font-weight: 500; }
+.ask-source small { color: var(--muted); font-size: 10.5px; }
+.ask-source-self { cursor: default; }
 .ask-status { display: inline-flex; align-items: center; gap: 9px; color: var(--muted); font-size: 12px; }
 .ask-status i { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 4px rgba(35,181,255,.1); animation: askPulse 1s ease-in-out infinite alternate; }
 .ask-composer { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 10px; padding: 14px 16px; border-top: 1px solid var(--line); background: rgba(255,255,255,.58); }

@@ -12,6 +12,26 @@ function sourceLabel(index) {
   return `S${index + 1}`;
 }
 
+function SourceCard({ source, index }) {
+  const content = (
+    <>
+      <strong>{sourceLabel(index)}</strong>
+      <span>{source.title}</span>
+      <small>{source.sourceType === "self_interview" ? "本人自述 · 访谈整理" : source.section}</small>
+    </>
+  );
+
+  if (source.sourceType === "self_interview") {
+    return <div className="ask-source ask-source-self">{content}</div>;
+  }
+
+  return (
+    <a className="ask-source" href={source.url} onClick={() => window.location.hash = source.url}>
+      {content}
+    </a>
+  );
+}
+
 function Message({ message }) {
   const displayContent = message.content?.replace(/\*\*/g, "");
   return (
@@ -22,11 +42,7 @@ function Message({ message }) {
         <div className="ask-sources" aria-label="回答引用">
           <span>回答依据</span>
           {message.sources.map((source, index) => (
-            <a href={source.url} key={source.id} onClick={() => window.location.hash = source.url}>
-              <strong>{sourceLabel(index)}</strong>
-              <span>{source.title}</span>
-              <small>{source.section}</small>
-            </a>
+            <SourceCard source={source} index={index} key={source.id} />
           ))}
         </div>
       )}
@@ -147,7 +163,7 @@ export function AskVitor() {
             <div>
               <span className="ask-header-kicker">RAG · VECTOR SEARCH</span>
               <h2>问问 Vitor</h2>
-              <p>我是 Vitor 的 AI 分身，基于公开资料用第一人称回答，并附原文出处。</p>
+              <p>我是 Vitor 的 AI 分身，基于公开资料和本人访谈用第一人称回答。</p>
             </div>
             <button type="button" aria-label="关闭问答" onClick={() => setOpen(false)}>×</button>
           </header>

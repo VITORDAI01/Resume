@@ -10,7 +10,7 @@ if (!process.env.AIPING_API_KEY) {
   throw new Error("缺少 AIPING_API_KEY，请先配置 .env.local。");
 }
 
-const indexPath = resolve(root, "knowledge/index.json");
+const indexPath = resolve(root, "knowledge/private/index.json");
 try {
   await access(indexPath);
 } catch {
