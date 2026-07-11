@@ -592,7 +592,6 @@ function DetailPage({ item }) {
             <a href={`#/experience/${item.id}`} onClick={scrollTo("background")}>背景与目标</a>
             {item.productStages && <a href={`#/experience/${item.id}`} onClick={scrollTo("stages")}>产品阶段</a>}
             {item.growthFlow && <a href={`#/experience/${item.id}`} onClick={scrollTo("growth-flow")}>增长链路</a>}
-            <a href={`#/experience/${item.id}`} onClick={scrollTo("actions")}>我做了什么</a>
             {item.evidence && <a href={`#/experience/${item.id}`} onClick={scrollTo("evidence")}>项目拆解</a>}
             {item.results && <a href={`#/experience/${item.id}`} onClick={scrollTo("results")}>结果与影响</a>}
             <a href={`#/experience/${item.id}`} onClick={scrollTo("reflection")}>复盘与思考</a>
@@ -640,13 +639,6 @@ function DetailPage({ item }) {
             </div>
           </section>
         )}
-
-        <section className="case-section" id="actions">
-          <div className="case-content" data-reveal>
-            <span className="eyebrow">Actions</span><h2>我做了什么</h2>
-            <div className={`action-timeline ${["aiping", "youdao"].includes(item.id) ? "action-timeline-rich" : ""}`}>{item.actions.map(([title, copy], index) => <article key={title}><span>{index + 1}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
-          </div>
-        </section>
 
         {item.evidence && (
           <section className="case-section evidence-section" id="evidence">
