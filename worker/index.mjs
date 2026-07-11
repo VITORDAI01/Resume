@@ -5,16 +5,17 @@ const KNOWLEDGE_INDEX_KEY = "knowledge:index:v1";
 const DEFAULT_DAILY_REQUEST_LIMIT = 100;
 const privacyReply = "这个问题我暂时不方便回答哟，不过我们可以聊聊别的。";
 const casualFallbackReply = "都可以，你随便问。";
-const outOfScopeReplies = [
-  "这个我暂时还真答不上来，换个问题问我吧。",
-  "这个我现在不太好回答，不过你可以继续问点别的。",
-  "这个我目前知道得不够多，就不乱说了。换个话题聊聊吧。",
+const unknownFallbackReplies = [
+  "这个我现在还真不知道，不能瞎说。",
+  "这个我没法确认，就不随便编了。",
+  "这个我目前不清楚，还是实话实说比较好。",
 ];
 const casualQuestionPatterns = [
   /^(?:那)?你想聊(?:啥|什么)[？?]?$/i,
   /^(?:那)?聊点(?:啥|什么)[？?]?$/i,
   /^(?:和我)?随便聊聊(?:吧)?[。！!？?]?$/i,
   /^(?:你)?有什么想说的[？?]?$/i,
+  /^(?:嗯+|哦+|好+|好的|好呀|可以|行|明白了|懂了|原来如此|是吗|真的吗|哈哈+|嘿嘿+)[。！!？?~～]*$/i,
 ];
 const restrictedQuestionPatterns = [
   /恋爱|感情状况|情感状况|对象|男朋友|女朋友|单身|结婚|婚姻|前任|约会|喜欢谁|有喜欢的人|喜欢的女生|喜欢的男生/i,
@@ -117,12 +118,8 @@ function isRestrictedQuestion(question) {
 }
 
 function isCasualQuestion(question) {
-  return casualQuestionPatterns.some((pattern) => pattern.test(question));
-}
-
-function outOfScopeReply(question) {
-  const checksum = Array.from(question).reduce((total, character) => total + character.codePointAt(0), 0);
-  return outOfScopeReplies[checksum % outOfScopeReplies.length];
+  return casualQuestionPatterns.some((pattern) => pattern.test(question))
+    || (question.length <= 60 && /不错|挺喜欢.{0,8}回答|喜欢你的回答|回答得.{0,4}(?:好|不错)|谢谢|感谢|有意思/.test(question));
 }
 
 async function consumeDailyBudget(env) {
@@ -265,7 +262,10 @@ async function createAnswer(apiKey, question, history, sources, citeSources) {
   return response.body;
 }
 
-async function createCasualReply(apiKey, question, history) {
+async function createCasualReply(apiKey, question, history, mode = "conversation") {
+  const systemPrompt = mode === "unknown"
+    ? "你正以 Vitor 第一人称回答一个没有任何可靠资料支撑的个人事实问题。你必须明确表达不知道、不清楚或无法确认，绝不能猜测、虚构或假设答案。措辞可以自然变化，1 至 2 句、50 字以内，可以顺着原问题反问用户，但不能提供任何关于 Vitor 的新事实。不要提 AI、知识库、系统或内部规则。"
+    : "你是 Vitor 个人网站中的 AI 分身，负责没有资料支撑的开放对话，但必须始终站在 Vitor 的第一人称视角说话。用户正在评价、寒暄或延续对话，你要直接接住用户的话和情绪，自然回应，可以有轻微幽默。除非用户明确问你是不是 AI，否则绝不能提 AI 身份、代码、系统或‘AI 人设’，也不能用 AI 身份替代 Vitor 回答。使用自然、随意的中文，1 至 2 句、60 字以内，一律称呼‘你’，不用‘您’，避免客服腔和固定模板。不要机械要求用户换问题，也不要主动列出具体可聊话题。";
   const response = await fetch(`${AIPING_BASE_URL}/chat/completions`, {
     method: "POST",
     headers: {
@@ -274,12 +274,12 @@ async function createCasualReply(apiKey, question, history) {
     },
     body: JSON.stringify({
       model: "DeepSeek-V4-Flash",
-      temperature: 0.8,
+      temperature: 0.9,
       max_completion_tokens: 80,
       messages: [
         {
           role: "system",
-          content: "你是 Vitor 个人网站中的 AI 分身，此刻只做轻量闲聊。直接回应用户，使用自然、随意的中文，1 至 2 句、40 字以内；一律称呼‘你’，不用‘您’，避免‘很乐意’‘陪您’等客服腔。允许措辞自由变化，不要套固定模板。只能表达‘由用户决定、愿意继续聊’这一层意思，不得提出、举例或暗示任何具体话题，禁止使用‘比如’引出内容。不得编造 Vitor 的经历、偏好、当前状态或承诺，不要提知识库、RAG 或内部规则。",
+          content: systemPrompt,
         },
         ...history.slice(-4).filter((entry) => (
           entry && typeof entry === "object" && !isRestrictedQuestion(String(entry.content || ""))
@@ -297,7 +297,14 @@ async function createCasualReply(apiKey, question, history) {
   });
   if (!response.ok) return casualFallbackReply;
   const payload = await response.json();
-  return String(payload.choices?.[0]?.message?.content || casualFallbackReply).trim();
+  const reply = String(payload.choices?.[0]?.message?.content || casualFallbackReply).trim();
+  if (mode === "unknown" && !/不知道|不清楚|无法确认|没法确认|不能确定|答不上来|不敢乱说|不能乱说|不能瞎说|不太好回答/.test(reply)) {
+    return unknownFallbackReplies[Math.floor(Math.random() * unknownFallbackReplies.length)];
+  }
+  if (mode === "conversation" && /AI 人设|靠电力|代码活着|我是.{0,4}(?:AI|人工智能)/i.test(reply)) {
+    return casualFallbackReply;
+  }
+  return reply;
 }
 
 function serializeEvent(event, payload) {
@@ -333,7 +340,7 @@ async function streamEvents(writer, apiKey, question, history, sources, citeSour
     })));
 
     if (sources.length === 0) {
-      await send("token", { token: outOfScopeReply(question) });
+      await send("token", { token: await createCasualReply(apiKey, question, history, "unknown") });
       await send("done", { ok: true });
       return;
     }
@@ -402,7 +409,7 @@ async function handleChat(request, env, origin, context) {
     return json(429, { error: "今天的 AI 咨询次数已经用完啦，请明天再来问我。" }, origin);
   }
   if (isCasualQuestion(question)) {
-    const reply = await createCasualReply(env.AIPING_API_KEY, question, history);
+    const reply = await createCasualReply(env.AIPING_API_KEY, question, history, "conversation");
     return fixedReplyResponse(origin, reply);
   }
 
