@@ -53,8 +53,12 @@ export function AskVitor() {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState([]);
   const [status, setStatus] = useState("idle");
+  const [panelPosition, setPanelPosition] = useState(null);
+  const [dragging, setDragging] = useState(false);
   const endRef = useRef(null);
   const inputRef = useRef(null);
+  const panelRef = useRef(null);
+  const dragRef = useRef(null);
 
   const busy = status !== "idle";
 
@@ -75,6 +79,68 @@ export function AskVitor() {
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [messages, status]);
+
+  useEffect(() => {
+    const keepPanelVisible = () => {
+      if (window.innerWidth <= 650) {
+        dragRef.current = null;
+        setDragging(false);
+        setPanelPosition(null);
+        return;
+      }
+      setPanelPosition((current) => {
+        if (!current || !panelRef.current) return current;
+        const rect = panelRef.current.getBoundingClientRect();
+        const margin = 12;
+        return {
+          x: Math.min(Math.max(current.x, margin), Math.max(margin, window.innerWidth - rect.width - margin)),
+          y: Math.min(Math.max(current.y, margin), Math.max(margin, window.innerHeight - rect.height - margin)),
+        };
+      });
+    };
+    window.addEventListener("resize", keepPanelVisible);
+    return () => window.removeEventListener("resize", keepPanelVisible);
+  }, []);
+
+  function startDrag(event) {
+    if (event.button !== 0 || window.innerWidth <= 650 || event.target.closest("button")) return;
+    const rect = panelRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: rect.left,
+      originY: rect.top,
+      width: rect.width,
+      height: rect.height,
+    };
+    setPanelPosition({ x: rect.left, y: rect.top });
+    setDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  }
+
+  function moveDrag(event) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const margin = 12;
+    const nextX = drag.originX + event.clientX - drag.startX;
+    const nextY = drag.originY + event.clientY - drag.startY;
+    setPanelPosition({
+      x: Math.min(Math.max(nextX, margin), Math.max(margin, window.innerWidth - drag.width - margin)),
+      y: Math.min(Math.max(nextY, margin), Math.max(margin, window.innerHeight - drag.height - margin)),
+    });
+  }
+
+  function stopDrag(event) {
+    if (dragRef.current?.pointerId !== event.pointerId) return;
+    dragRef.current = null;
+    setDragging(false);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }
 
   async function ask(nextQuestion) {
     const prompt = String(nextQuestion ?? question).trim();
@@ -156,8 +222,28 @@ export function AskVitor() {
       </button>
 
       {open && (
-        <section className="ask-panel" role="dialog" aria-label="问问 Vitor">
-          <header className="ask-header">
+        <section
+          ref={panelRef}
+          className={dragging ? "ask-panel is-dragging" : "ask-panel"}
+          role="dialog"
+          aria-label="问问 Vitor"
+          style={panelPosition ? {
+            position: "fixed",
+            left: panelPosition.x,
+            top: panelPosition.y,
+            right: "auto",
+            bottom: "auto",
+            transform: "none",
+          } : undefined}
+        >
+          <header
+            className="ask-header"
+            title="拖动窗口"
+            onPointerDown={startDrag}
+            onPointerMove={moveDrag}
+            onPointerUp={stopDrag}
+            onPointerCancel={stopDrag}
+          >
             <div>
               <span className="ask-header-kicker">RAG · VECTOR SEARCH</span>
               <h2>问问 Vitor</h2>

@@ -454,7 +454,7 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
   .hero-visual, .portrait-frame img { transform: none; }
 }
 
-.ask-vitor { position: fixed; right: 24px; top: 50%; bottom: auto; z-index: 320; transform: translateY(-50%); }
+.ask-vitor { position: fixed; right: 24px; top: calc(50% - 26px); bottom: auto; z-index: 320; }
 .ask-launcher { position: relative; isolation: isolate; display: inline-flex; align-items: center; gap: 11px; min-height: 52px; padding: 0 20px; border: 1px solid rgba(83,174,255,.58); border-radius: 25px 25px 25px 8px; color: #174e9b; background: linear-gradient(135deg, rgba(255,255,255,.72), rgba(74,164,255,.27) 48%, rgba(55,107,255,.18)); background-size: 180% 180%; box-shadow: inset 0 1px 0 rgba(255,255,255,.82), inset 0 -1px 0 rgba(55,107,255,.12), 0 14px 38px rgba(55,107,255,.2), 0 0 0 7px rgba(75,162,255,.055); backdrop-filter: blur(18px) saturate(170%); font: 500 13px "Noto Sans SC", sans-serif; letter-spacing: .01em; cursor: pointer; animation: askBubbleFloat 3.8s ease-in-out infinite, askBubbleLight 7s ease-in-out infinite; transition: color .24s ease, border-color .24s ease, box-shadow .24s ease, filter .24s ease; }
 .ask-launcher::before { content: ""; position: absolute; z-index: -1; inset: 5px 10px auto 12px; height: 17px; border-radius: 999px; background: linear-gradient(90deg, rgba(255,255,255,.72), rgba(255,255,255,.08)); filter: blur(.2px); opacity: .72; pointer-events: none; }
 .ask-launcher::after { content: ""; position: absolute; z-index: -2; left: 7px; bottom: -5px; width: 13px; height: 13px; border-right: 1px solid rgba(83,174,255,.42); border-bottom: 1px solid rgba(83,174,255,.42); border-radius: 0 0 4px 0; background: rgba(187,224,255,.68); transform: rotate(45deg); box-shadow: 6px 6px 16px rgba(55,107,255,.08); backdrop-filter: blur(12px); }
@@ -462,7 +462,8 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
 .ask-launcher:focus-visible { outline: 2px solid rgba(55,107,255,.72); outline-offset: 5px; }
 .ask-launcher-dot { width: 8px; height: 8px; border-radius: 50%; background: #2fc7ff; box-shadow: 0 0 0 5px rgba(47,199,255,.13), 0 0 15px rgba(47,199,255,.72); animation: askBubbleDot 1.8s ease-in-out infinite; }
 .ask-panel { position: absolute; right: calc(100% + 14px); top: 50%; bottom: auto; display: grid; grid-template-rows: auto minmax(0,1fr) auto auto; width: min(540px, calc(100vw - 200px)); height: min(720px, calc(100vh - 48px)); overflow: hidden; border: 1px solid rgba(55,107,255,.2); border-radius: 16px; background: rgba(248,250,253,.97); box-shadow: 0 30px 90px rgba(28,55,110,.24); backdrop-filter: blur(22px) saturate(145%); transform: translateY(-50%); }
-.ask-header { display: flex; justify-content: space-between; gap: 24px; padding: 25px 26px 21px; border-bottom: 1px solid var(--line); background: linear-gradient(135deg, rgba(55,107,255,.08), rgba(35,181,255,.025)); }
+.ask-header { display: flex; justify-content: space-between; gap: 24px; padding: 25px 26px 21px; border-bottom: 1px solid var(--line); background: linear-gradient(135deg, rgba(55,107,255,.08), rgba(35,181,255,.025)); cursor: grab; user-select: none; touch-action: none; }
+.ask-panel.is-dragging .ask-header { cursor: grabbing; }
 .ask-header-kicker { color: var(--blue); font: 11px "IBM Plex Mono", monospace; letter-spacing: .12em; }
 .ask-header h2 { margin: 8px 0 5px; font-size: 28px; font-weight: 500; letter-spacing: -.035em; }
 .ask-header p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
@@ -502,8 +503,9 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
 
 @media (max-width: 650px) {
   .ask-vitor { right: 14px; top: auto; bottom: 14px; transform: none; }
-  .ask-panel { position: fixed; inset: 0; width: 100vw; height: 100dvh; border: 0; border-radius: 0; transform: none; }
-  .ask-header { padding: 20px 18px 17px; }
+  .ask-panel { position: fixed; inset: 0 !important; width: 100vw; height: 100dvh; border: 0; border-radius: 0; transform: none !important; }
+  .ask-header { padding: 20px 18px 17px; cursor: default; touch-action: auto; }
+  .ask-panel.is-dragging .ask-header { cursor: default; }
   .ask-conversation { padding: 18px 16px; }
   .ask-composer { padding: 12px; }
   .ask-disclaimer { padding-bottom: max(10px, env(safe-area-inset-bottom)); }
