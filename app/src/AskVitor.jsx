@@ -371,7 +371,8 @@ export function AskVitor() {
               placeholder="询问经历、项目、研究或岗位匹配…"
               onChange={(event) => setQuestion(event.target.value)}
               onKeyDown={(event) => {
-                if (event.key === "Enter" && !event.shiftKey) {
+                const isComposing = event.nativeEvent.isComposing || event.keyCode === 229;
+                if (event.key === "Enter" && !event.shiftKey && !isComposing) {
                   event.preventDefault();
                   ask();
                 }
