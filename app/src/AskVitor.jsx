@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 
 const apiBase = import.meta.env.VITE_AGENT_API_URL || "http://127.0.0.1:8787";
 const suggestions = [
-  "介绍一下你自己",
-  "你有哪些值得聊聊的经历？",
+  "用 30 秒介绍你自己",
+  "为什么你适合产品运营岗位？",
+  "讲一个从 0 到 1 的产品项目",
 ];
 const minPanelWidth = 380;
 const minPanelHeight = 460;
@@ -34,12 +35,17 @@ function SourceCard({ source, index }) {
   );
 }
 
-function Message({ message }) {
+function Message({ message, busy, onRetry }) {
   const displayContent = message.content?.replace(/\*\*/g, "");
   return (
     <article className={`ask-message ask-message-${message.role}`}>
       <span className="ask-message-role">{message.role === "user" ? "YOU" : "ASK VITOR"}</span>
       <div className="ask-message-copy">{displayContent || "正在组织回答…"}</div>
+      {message.retryPrompt && (
+        <button className="ask-retry" type="button" disabled={busy} onClick={() => onRetry(message)}>
+          重试
+        </button>
+      )}
       {message.sources?.length > 0 && (
         <div className="ask-sources" aria-label="回答引用">
           <span>回答依据</span>
@@ -61,13 +67,21 @@ export function AskVitor() {
   const [panelSize, setPanelSize] = useState(null);
   const [dragging, setDragging] = useState(false);
   const [resizing, setResizing] = useState(false);
+  const [mobile, setMobile] = useState(() => window.innerWidth <= 650);
   const endRef = useRef(null);
   const inputRef = useRef(null);
+  const launcherRef = useRef(null);
   const panelRef = useRef(null);
   const dragRef = useRef(null);
   const resizeRef = useRef(null);
+  const requestControllerRef = useRef(null);
 
   const busy = status !== "idle";
+
+  function closePanel() {
+    setOpen(false);
+    window.requestAnimationFrame(() => launcherRef.current?.focus());
+  }
 
   useEffect(() => {
     const openAgent = () => setOpen(true);
@@ -78,10 +92,18 @@ export function AskVitor() {
   useEffect(() => {
     if (!open) return;
     inputRef.current?.focus();
-    const onKeyDown = (event) => event.key === "Escape" && setOpen(false);
+    const onKeyDown = (event) => event.key === "Escape" && closePanel();
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
+
+  useEffect(() => () => requestControllerRef.current?.abort(), []);
+
+  useEffect(() => {
+    if (!inputRef.current) return;
+    inputRef.current.style.height = "auto";
+    inputRef.current.style.height = `${Math.min(inputRef.current.scrollHeight, 120)}px`;
+  }, [question]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -89,7 +111,9 @@ export function AskVitor() {
 
   useEffect(() => {
     const keepPanelVisible = () => {
-      if (window.innerWidth <= 650) {
+      const nextMobile = window.innerWidth <= 650;
+      setMobile(nextMobile);
+      if (nextMobile) {
         dragRef.current = null;
         if (resizeRef.current) {
           window.removeEventListener("pointermove", resizeRef.current.onMove);
@@ -230,14 +254,56 @@ export function AskVitor() {
     }
   }
 
-  async function ask(nextQuestion) {
+  function stopAnswer() {
+    requestControllerRef.current?.abort();
+  }
+
+  function startNewConversation() {
+    const controller = requestControllerRef.current;
+    requestControllerRef.current = null;
+    controller?.abort();
+    setMessages([]);
+    setQuestion("");
+    setStatus("idle");
+    window.requestAnimationFrame(() => inputRef.current?.focus());
+  }
+
+  function trapMobileFocus(event) {
+    if (event.key !== "Tab" || !mobile) return;
+    const focusable = [...event.currentTarget.querySelectorAll("a[href], button:not([disabled]), textarea:not([disabled])")]
+      .filter((element) => element.offsetParent !== null);
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first?.focus();
+    }
+  }
+
+  async function ask(nextQuestion, retryMessageId = null) {
     const prompt = String(nextQuestion ?? question).trim();
-    if (!prompt || busy) return;
+    if (!prompt || busy || requestControllerRef.current) return;
 
     const assistantId = `assistant-${Date.now()}`;
     const userMessage = { id: `user-${Date.now()}`, role: "user", content: prompt };
-    const history = messages.map(({ role, content }) => ({ role, content }));
-    setMessages((current) => [...current, userMessage, { id: assistantId, role: "assistant", content: "", sources: [] }]);
+    const baseMessages = retryMessageId
+      ? messages.filter((message) => message.id !== retryMessageId)
+      : messages;
+    const lastMessage = baseMessages[baseMessages.length - 1];
+    const reuseLastUserMessage = lastMessage?.role === "user" && lastMessage.content === prompt;
+    const historyMessages = reuseLastUserMessage ? baseMessages.slice(0, -1) : baseMessages;
+    const history = historyMessages.map(({ role, content }) => ({ role, content }));
+    const nextMessages = [
+      ...baseMessages,
+      ...(reuseLastUserMessage ? [] : [userMessage]),
+      { id: assistantId, role: "assistant", content: "", sources: [] },
+    ];
+    const controller = new AbortController();
+    requestControllerRef.current = controller;
+    setMessages(nextMessages);
     setQuestion("");
     setStatus("retrieving");
 
@@ -246,6 +312,7 @@ export function AskVitor() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: prompt, history }),
+        signal: controller.signal,
       });
 
       if (!response.ok || !response.body) {
@@ -285,15 +352,31 @@ export function AskVitor() {
         }
       }
     } catch (error) {
+      if (error.name === "AbortError") {
+        setMessages((current) => current.map((message) => (
+          message.id === assistantId && !message.content
+            ? { ...message, content: "已停止回答。", sources: [] }
+            : message
+        )));
+        return;
+      }
       const expectedLimit = error.message.startsWith("请求过于频繁")
         || error.message.startsWith("今天的 AI 咨询次数");
       setMessages((current) => current.map((message) => (
         message.id === assistantId
-          ? { ...message, content: expectedLimit ? error.message : `暂时无法完成回答：${error.message}`, sources: [] }
+          ? {
+            ...message,
+            content: expectedLimit ? error.message : "暂时无法完成回答，请稍后重试。",
+            sources: [],
+            retryPrompt: expectedLimit ? undefined : prompt,
+          }
           : message
       )));
     } finally {
-      setStatus("idle");
+      if (requestControllerRef.current === controller) {
+        requestControllerRef.current = null;
+        setStatus("idle");
+      }
     }
   }
 
@@ -317,18 +400,28 @@ export function AskVitor() {
 
   return (
     <div className={open ? "ask-vitor is-open" : "ask-vitor"}>
-      <button className="ask-launcher" type="button" aria-expanded={open} onClick={() => setOpen(!open)}>
+      <button
+        ref={launcherRef}
+        className="ask-launcher"
+        type="button"
+        aria-controls="ask-vitor-panel"
+        aria-expanded={open}
+        onClick={() => open ? closePanel() : setOpen(true)}
+      >
         <span className="ask-launcher-dot" />
         <span>问问 Vitor</span>
       </button>
 
       {open && (
         <section
+          id="ask-vitor-panel"
           ref={panelRef}
           className={panelClassName}
           role="dialog"
-          aria-label="问问 Vitor"
+          aria-labelledby="ask-vitor-title"
+          aria-modal={mobile || undefined}
           style={panelStyle}
+          onKeyDown={trapMobileFocus}
         >
           <header
             className="ask-header"
@@ -340,10 +433,15 @@ export function AskVitor() {
           >
             <div>
               <span className="ask-header-kicker">RAG · VECTOR SEARCH</span>
-              <h2>问问 Vitor</h2>
+              <h2 id="ask-vitor-title">问问 Vitor</h2>
               <p>我是 Vitor 的 AI 分身，基于公开资料和本人访谈用第一人称回答。</p>
             </div>
-            <button type="button" aria-label="关闭问答" onClick={() => setOpen(false)}>×</button>
+            <div className="ask-header-actions">
+              {messages.length > 0 && (
+                <button className="ask-new-chat" type="button" onClick={startNewConversation}>新对话</button>
+              )}
+              <button className="ask-close" type="button" aria-label="关闭问答" onClick={closePanel}>×</button>
+            </div>
           </header>
 
           <div className="ask-conversation" aria-live="polite">
@@ -356,9 +454,16 @@ export function AskVitor() {
                   ))}
                 </div>
               </div>
-            ) : messages.map((message) => <Message message={message} key={message.id} />)}
+            ) : messages.map((message) => (
+              <Message
+                message={message}
+                busy={busy}
+                key={message.id}
+                onRetry={(failedMessage) => ask(failedMessage.retryPrompt, failedMessage.id)}
+              />
+            ))}
             {status === "retrieving" && <div className="ask-status"><i />正在检索公开资料</div>}
-            {status === "answering" && <div className="ask-status"><i />DeepSeek-V4-Flash 正在回答</div>}
+            {status === "answering" && <div className="ask-status"><i />正在组织回答</div>}
             <div ref={endRef} />
           </div>
 
@@ -369,6 +474,8 @@ export function AskVitor() {
               rows="2"
               maxLength="800"
               placeholder="询问经历、项目、研究或岗位匹配…"
+              aria-label="向 Vitor 提问"
+              aria-describedby="ask-input-hint"
               onChange={(event) => setQuestion(event.target.value)}
               onKeyDown={(event) => {
                 const isComposing = event.nativeEvent.isComposing || event.keyCode === 229;
@@ -378,7 +485,14 @@ export function AskVitor() {
                 }
               }}
             />
-            <button type="submit" disabled={!question.trim() || busy}>{busy ? "回答中" : "发送"}</button>
+            <button
+              type={busy ? "button" : "submit"}
+              disabled={!busy && !question.trim()}
+              onClick={busy ? stopAnswer : undefined}
+            >
+              {busy ? "停止回答" : "发送"}
+            </button>
+            <span id="ask-input-hint" className="ask-input-hint">Enter 发送 · Shift+Enter 换行</span>
           </form>
           <aside className="ask-disclaimer" role="note">
             <strong>AI 提示</strong>
