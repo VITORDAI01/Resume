@@ -295,7 +295,11 @@ export function AskVitor() {
     const lastMessage = baseMessages[baseMessages.length - 1];
     const reuseLastUserMessage = lastMessage?.role === "user" && lastMessage.content === prompt;
     const historyMessages = reuseLastUserMessage ? baseMessages.slice(0, -1) : baseMessages;
-    const history = historyMessages.map(({ role, content }) => ({ role, content }));
+    const history = historyMessages.map(({ role, content, sources }) => ({
+      role,
+      content,
+      ...(sources?.length ? { sourceIds: sources.map(({ id }) => id) } : {}),
+    }));
     const nextMessages = [
       ...baseMessages,
       ...(reuseLastUserMessage ? [] : [userMessage]),

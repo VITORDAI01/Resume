@@ -10,17 +10,10 @@ const experienceOverviewTexts = {
   "youdao-overview": "2024 年 2 月至 2024 年 6 月，我在网易有道升学中心 OMO 项目组担任新媒体运营实习生。在没有投流预算的情况下，从 0 到 1 冷启动南京、大同、宁波、武汉四个地方微信视频号和一个全国微信视频号。",
 };
 const curatedSourceViews = {
-  "persona-self-introduction": {
-    curatedReply: "现在在清华读传播学硕士，主要研究智能传播和 A2A 智能体协作。本科读的是广播电视学，后来做过 AI 算力平台产品运营、金融内容运营和新媒体增长，也一直在尝试把 AI 工具真正做成能用的产品和工作流。工作之外会做音乐、打篮球和健身。不太喜欢给自己贴一个固定标签，更愿意把自己看作一个持续尝试、边做边学的人。",
-  },
-  "career-positioning": {
-    curatedReply: "如果把几段经历放在一起，我比较适合产品运营的地方，是既愿意贴近用户，也会自己动手把流程做得更有效率。在 AI Ping，我参与大模型算力平台运营，通过问卷和深度访谈区分个人开发者与小 B 用户的不同诉求，并据此推动跳转路径简化、P90 延迟评测和 Agent Store 概念。在同花顺，我又从 0 到 1 规划并搭建达人运营中台，用 Streamlit 原型连接实际运营流程，让单次数据整理从约 4 小时降到 30 分钟。对我来说，产品运营不是单纯做活动或写内容，而是理解用户、拆解问题，再把方案真正推进下去。",
-  },
   "ths-platform": {
     title: "从 0 到 1 搭建达人运营中台",
     section: "同花顺 · 项目故事",
     text: "这是一个适合回答‘从 0 到 1 产品项目’的已确认案例。戴维多尔在同花顺从 0 到 1 规划并搭建达人运营中台，初期通过 Vibe Coding 开发内部 Streamlit 原型，连接飞书多维表格与抖音数据采集流程，并规划后续整合进公司内网中台。原型覆盖达人视频采集、数据重采集、达人主页监控、达人库分类维护、合作视频归档、看后搜匹配和周月复盘。已确认的效率结果是：单次数据整理从约 4 小时降至约 30 分钟，单条达人数据登记从 1 至 2 分钟降至约 10 秒，周度复盘从 2 至 3 小时降至约 30 分钟。公开资料没有说明项目的具体起因、原团队工作状态、每日数据量、迭代次数或团队采用规模，回答时不得补写。社媒新增用户占比和达人内容看后搜占比是同期业务数据，不能说成中台直接带来的结果。",
-    curatedReply: "比较有代表性的是我在同花顺做的达人运营中台。这个项目由我从 0 到 1 规划和搭建：先通过 Vibe Coding 开发内部 Streamlit 原型，连接飞书多维表格和抖音数据采集流程，覆盖达人视频采集、主页监控、合作归档、看后搜匹配以及周月复盘。效率变化很直接——单次数据整理从约 4 小时降到 30 分钟，单条达人数据登记从 1 至 2 分钟降到约 10 秒，周度复盘也从 2 至 3 小时降到 30 分钟。后续规划是把它整合进公司内网中台。对我来说，这个项目的价值不只是做出了工具，更在于先用轻量原型验证了真实流程。",
   },
 };
 const privacyReply = "这个问题我暂时不方便回答哟，不过我们可以聊聊别的。";
@@ -178,9 +171,7 @@ function isExperienceOverviewQuestion(question) {
 }
 
 function buildRetrievalQuery(question, history) {
-  const isFollowUp = /^(那|那么|这个|这件事|它|后来|然后|其中|结果|还有|再说说|展开说说|具体呢)/.test(question)
-    || /它|这件事|这个项目|这段经历|那次|后来/.test(question);
-  if (!isFollowUp) return question;
+  if (!isFollowUpQuestion(question)) return question;
   const previousUserMessage = [...history].reverse().find((entry) => (
     entry && typeof entry === "object" && entry.role === "user" && !isRestrictedQuestion(String(entry.content || ""))
   ))?.content;
@@ -202,18 +193,94 @@ function classifyAnswerMode(question) {
   return "direct";
 }
 
-function curatedSourceIds(question) {
+function isMostlyEnglish(question) {
+  const letters = (question.match(/[a-z]/gi) || []).length;
+  const chinese = (question.match(/[\u3400-\u9fff]/g) || []).length;
+  return letters >= 8 && letters > chinese * 2;
+}
+
+function isFollowUpQuestion(question) {
+  return /^(那|那么|这个|这件事|它|后来|然后|其中|结果|还有|再说说|展开说说|具体(?:呢|怎么|如何)?)/.test(question)
+    || /它|这件事|这个项目|这段经历|那次|后来/.test(question);
+}
+
+function sourceIdsFromHistory(question, history) {
+  if (!isFollowUpQuestion(question)) return [];
+  const previousAnswer = [...history].reverse().find((entry) => (
+    entry && typeof entry === "object" && entry.role === "assistant" && Array.isArray(entry.sourceIds)
+  ));
+  return [...new Set((previousAnswer?.sourceIds || []).filter((id) => typeof id === "string"))].slice(0, 4);
+}
+
+function curatedAnswerRoute(question) {
   const normalized = normalizeQuestion(question);
+  const english = isMostlyEnglish(question);
+  if (/愿意.{0,8}(?:来|加入|入职|接受)|考虑.{0,8}(?:我们公司|这个岗位)|would you (?:join|work|accept)|are you willing to/i.test(question)) {
+    return {
+      sourceIds: [],
+      reply: english
+        ? "That decision needs Vitor himself to understand the role, team, and mutual expectations first. I’m his AI representative and can’t make a job commitment for him, but you can contact him directly if the role looks like a fit."
+        : "这个问题需要本人了解岗位、团队和双方期待后再决定。这里是 AI 分身，不能替本人作出求职承诺；如果岗位合适，可以直接联系本人进一步聊。",
+    };
+  }
+  if (/what did you do at (?:ai ping|qingcheng)|tell me about your (?:ai ping|qingcheng)/i.test(question)) {
+    return {
+      sourceIds: ["aiping-overview", "aiping-research", "aiping-growth"],
+      reply: "At Qingcheng Jizhi’s AI Ping, I was a product operations intern participating in the full-lifecycle operation of a developer-facing AI computing platform. My work covered product testing, user feedback, product improvements, brand content, and growth activities. Through surveys and interviews, I helped distinguish the needs of individual developers and small-business users, then contributed to improvements including a simpler navigation path, P90 latency evaluation, and the Agent Store concept. My role was to participate and help drive these efforts—not to independently own the entire product.",
+    };
+  }
+  if (/tell me about yourself|introduce yourself|who are you/i.test(question)) {
+    return {
+      sourceIds: ["persona-self-introduction"],
+      reply: "I’m currently pursuing a master’s degree in communication at Tsinghua University, focusing on intelligent communication and agent-to-agent collaboration. My experience spans product operations for an AI computing platform, financial content operations, and new-media growth, and I enjoy turning AI tools into practical products and workflows. Outside work, I make music, play basketball, and work out. I see myself less as a fixed label and more as someone who keeps experimenting and learning by doing.",
+    };
+  }
+  if (/同花顺.{0,8}ai\s*ping|ai\s*ping.{0,8}同花顺/i.test(question) && /更|比较|对比|区别|锻炼/.test(question)) {
+    return {
+      sourceIds: ["ths-overview", "ths-platform", "aiping-overview", "aiping-research"],
+      reply: "很难用同一把尺子说哪段经历‘更’锻炼，因为公开资料只支持两段经历锻炼的维度不同。AI Ping 让我参与从内测、用户研究到增长转化；同花顺则让我从 0 到 1 规划并搭建达人运营中台，用工具显著压缩数据整理时间。前者更偏开发者产品与用户转化，后者更偏运营流程产品化；不能据此替本人作单一排序。",
+    };
+  }
+  if (/进行曲|这个话题/.test(question) && /直接|带来|新增用户|因果/.test(question)) {
+    return {
+      sourceIds: ["ths-campaign"],
+      reply: "目前不能确认这个话题直接带来了多少新增用户。可观察到的是：爆发前 4 月 1 日至 6 日，日均新增 6,686；爆发后 4 月 7 日至 13 日，日均新增 17,352，约为此前的 2.6 倍，4 月 9 日峰值为 22,866。这只能说明话题扩散与新增趋势同期变化，不能证明直接因果。",
+    };
+  }
+  if (/失败|没成功|没有成功|挫折/.test(normalized) && /经历|项目|一次|讲/.test(normalized)) {
+    return {
+      sourceIds: ["persona-learning-style"],
+      reply: "比较接近失败的一次，是约 2025 年初在几乎没有代码基础时尝试做卡牌游戏 Agent。它通过截图识别对战画面，并用像素点击执行操作，最后只完成基本框架和 API 调用，运行较慢、效果也没有达到预期。虽然项目没完整做成，但我由此学会了使用 GitHub、拉取和修改项目以及调用模型，也更能接受没有完全成功的尝试依然可以带来真实学习。",
+    };
+  }
+  if (/清程极智|ai\s*ping/i.test(question) && /做了|做过|干了|负责|经历|工作|介绍|聊聊|说说/.test(question)) {
+    return {
+      sourceIds: ["aiping-overview", "aiping-research", "aiping-growth"],
+      reply: "在清程极智的 AI Ping，我担任产品运营实习生，参与面向开发者的大模型算力平台全生命周期运营。工作涉及产品内测、用户反馈、产品优化、品牌内容和增长活动；用户研究中通过问卷和深访区分个人开发者与小 B 用户诉求，并基于结论推动跳转路径简化、P90 延迟评测和 Agent Store 概念。这里的职责边界是‘参与’和‘推动’，不是独立负责整个产品。",
+    };
+  }
+  if (/同花顺/.test(question) && /做了|做过|干了|负责|经历|工作|介绍|聊聊|说说/.test(question)) {
+    return { sourceIds: ["ths-overview", "ths-platform", "ths-agent-system", "ths-campaign"], reply: experienceOverviewTexts["ths-overview"] };
+  }
   if (/从0到1/.test(normalized) && /产品|平台|工具|中台|项目/.test(normalized)) {
-    return ["ths-platform"];
+    return {
+      sourceIds: ["ths-platform"],
+      reply: "比较有代表性的是同花顺的达人运营中台。这个项目由我从 0 到 1 规划和搭建：先通过 Vibe Coding 开发内部 Streamlit 原型，连接飞书多维表格和抖音数据采集流程，覆盖达人视频采集、主页监控、合作归档、看后搜匹配以及周月复盘。单次数据整理从约 4 小时降到 30 分钟，单条达人数据登记从 1 至 2 分钟降到约 10 秒，周度复盘也从 2 至 3 小时降到约 30 分钟。后续规划是把它整合进公司内网中台。",
+    };
   }
   if (/为什么.*适合.*(?:产品运营|ai产品运营)|(?:产品运营|ai产品运营).*岗位匹配/.test(normalized)) {
-    return ["career-positioning", "aiping-research", "ths-platform"];
+    return {
+      sourceIds: ["career-positioning", "aiping-research", "ths-platform"],
+      reply: "如果把几段经历放在一起，我比较适合产品运营的地方，是既愿意贴近用户，也会自己动手把流程做得更有效率。在 AI Ping，我参与用户研究并据此推动产品优化；在同花顺，我又从 0 到 1 规划并搭建达人运营中台，让单次数据整理从约 4 小时降到 30 分钟。对我来说，产品运营不是单纯做活动或写内容，而是理解用户、拆解问题，再把方案真正推进下去。",
+    };
   }
   if (/30秒|自我介绍|介绍.*自己|你是谁/.test(normalized)) {
-    return ["persona-self-introduction"];
+    return {
+      sourceIds: ["persona-self-introduction"],
+      reply: "现在在清华读传播学硕士，主要研究智能传播和 A2A 智能体协作。本科读的是广播电视学，后来做过 AI 算力平台产品运营、金融内容运营和新媒体增长，也一直在尝试把 AI 工具真正做成能用的产品和工作流。工作之外会做音乐、打篮球和健身。不太喜欢给自己贴一个固定标签，更愿意把自己看作一个持续尝试、边做边学的人。",
+    };
   }
-  return [];
+  return null;
 }
 
 function answerModeInstruction(mode) {
@@ -233,18 +300,6 @@ function answerModeInstruction(mode) {
 }
 
 function retrieve(index, queryEmbedding, question, limit = 5) {
-  const pinnedSourceIds = curatedSourceIds(question);
-  if (pinnedSourceIds.length > 0) {
-    return pinnedSourceIds
-      .map((id) => index.chunks.find((chunk) => chunk.id === id))
-      .filter(Boolean)
-      .map((chunk) => ({
-        ...chunk,
-        ...(curatedSourceViews[chunk.id] || {}),
-        score: cosineSimilarity(queryEmbedding, chunk.embedding),
-      }))
-      .map(({ embedding, ...chunk }) => chunk);
-  }
   if (isExperienceOverviewQuestion(question)) {
     return experienceOverviewSourceIds
       .map((id) => index.chunks.find((chunk) => chunk.id === id))
@@ -272,6 +327,14 @@ function retrieve(index, queryEmbedding, question, limit = 5) {
     .map(({ embedding, ...chunk }) => chunk);
 }
 
+function selectSourcesById(index, sourceIds) {
+  return sourceIds
+    .map((id) => index.chunks.find((chunk) => chunk.id === id))
+    .filter(Boolean)
+    .map((chunk) => ({ ...chunk, ...(curatedSourceViews[chunk.id] || {}), score: 1 }))
+    .map(({ embedding, ...chunk }) => chunk);
+}
+
 function buildMessages(question, history, sources, answerMode) {
   const evidence = sources.length > 0
     ? sources.map((source, sourceIndex) => (
@@ -287,6 +350,10 @@ function buildMessages(question, history, sources, answerMode) {
     {
       role: "system",
       content: answerModeInstruction(answerMode),
+    },
+    {
+      role: "system",
+      content: isMostlyEnglish(question) ? "The user asked in English. Answer in natural English." : "用户使用中文提问，使用自然中文回答。",
     },
     {
       role: "system",
@@ -402,9 +469,21 @@ function serializeEvent(event, payload) {
   return `event: ${event}\ndata: ${JSON.stringify(payload)}\n\n`;
 }
 
-function fixedReplyResponse(origin, reply) {
+function serializeSources(sources) {
+  return sources.map(({ id, title, section, sourceType, url, text, score }) => ({
+    id,
+    title,
+    section,
+    sourceType,
+    url,
+    excerpt: text.slice(0, 150),
+    score: Number(score.toFixed(4)),
+  }));
+}
+
+function fixedReplyResponse(origin, reply, sources = []) {
   return new Response([
-    serializeEvent("sources", []),
+    serializeEvent("sources", serializeSources(sources)),
     serializeEvent("token", { token: reply }),
     serializeEvent("done", { ok: true }),
   ].join(""), {
@@ -420,22 +499,7 @@ async function streamEvents(writer, apiKey, question, history, sources, citeSour
   const encoder = new TextEncoder();
   const send = (event, payload) => writer.write(encoder.encode(serializeEvent(event, payload)));
   try {
-    await send("sources", (citeSources ? sources : []).map(({ id, title, section, sourceType, url, text, score }) => ({
-      id,
-      title,
-      section,
-      sourceType,
-      url,
-      excerpt: text.slice(0, 150),
-      score: Number(score.toFixed(4)),
-    })));
-
-    const curatedReply = sources.find((source) => source.curatedReply)?.curatedReply || "";
-    if (curatedReply) {
-      await send("token", { token: curatedReply });
-      await send("done", { ok: true });
-      return;
-    }
+    await send("sources", serializeSources(citeSources ? sources : []));
 
     if (sources.length === 0) {
       await send("token", { token: await createCasualReply(apiKey, question, history, "unknown") });
@@ -502,6 +566,14 @@ async function handleChat(request, env, origin, context) {
     return fixedReplyResponse(origin, privacyReply);
   }
 
+  const curatedRoute = curatedAnswerRoute(question);
+  if (curatedRoute) {
+    const sources = curatedRoute.sourceIds.length > 0
+      ? selectSourcesById(await loadIndex(env), curatedRoute.sourceIds)
+      : [];
+    return fixedReplyResponse(origin, curatedRoute.reply, sources);
+  }
+
   const dailyBudget = await consumeDailyBudget(env);
   if (!dailyBudget.allowed) {
     return json(429, { error: "今天的 AI 咨询次数已经用完啦，请明天再来问我。" }, origin);
@@ -513,9 +585,15 @@ async function handleChat(request, env, origin, context) {
 
   const index = await loadIndex(env);
   const retrievalQuery = buildRetrievalQuery(question, history);
-  const queryEmbedding = await embed(env.AIPING_API_KEY, index, retrievalQuery);
-  if (!queryEmbedding) throw new Error("问题向量响应无效。");
-  const sources = retrieve(index, queryEmbedding, question);
+  const previousSourceIds = sourceIdsFromHistory(question, history);
+  let sources;
+  if (previousSourceIds.length > 0) {
+    sources = selectSourcesById(index, previousSourceIds);
+  } else {
+    const queryEmbedding = await embed(env.AIPING_API_KEY, index, retrievalQuery);
+    if (!queryEmbedding) throw new Error("问题向量响应无效。");
+    sources = retrieve(index, queryEmbedding, question);
+  }
   const citeSources = shouldCiteSources(retrievalQuery, sources);
   const answerMode = classifyAnswerMode(question);
   const stream = new TransformStream();

@@ -7,6 +7,7 @@
     "dev": "node scripts/dev.mjs",
     "dev:web": "vite --host 127.0.0.1",
     "dev:api": "node server/index.mjs",
+    "qa:chat": "node scripts/evaluate-chat.mjs",
     "knowledge:index": "node scripts/build-knowledge.mjs",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1"
