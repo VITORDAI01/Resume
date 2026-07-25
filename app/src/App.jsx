@@ -903,10 +903,10 @@ function ToolsPage() {
             <div className="tool-showcase-copy">
               <img src={asset("danmu-saver-icon.png")} alt="弹幕屏保应用图标" />
               <div>
-                <span className="tool-version">macOS · v1.3</span>
+                <span className="tool-version">macOS · v1.4</span>
                 <h3>让自己的话，在屏幕上飘过去。</h3>
                 <p>输入几句话，自由设置局部颜色和粗体，待机后自动播放成全屏弹幕。</p>
-                <div className="tag-list"><span>RGB 富文本</span><span>整体实时预览</span><span>轨道防重叠</span></div>
+                <div className="tag-list"><span>圆形色谱 + RGB</span><span>整体实时预览</span><span>轨道防重叠</span></div>
                 <strong>查看并下载 ↗</strong>
               </div>
             </div>
@@ -934,11 +934,11 @@ function DanmuSaverPage() {
                 <img src={asset("danmu-saver-icon.png")} alt="弹幕屏保应用图标" />
                 <span>弹幕屏保</span>
               </div>
-              <span className="eyebrow">Danmu Saver · v1.3</span>
+              <span className="eyebrow">Danmu Saver · v1.4</span>
               <h1>让自己的话，<br />在屏幕上飘过去。</h1>
               <p>一个轻量的 macOS 菜单栏小工具。写下想看的句子，设置颜色和粗体，空闲后自动进入全屏弹幕。</p>
               <div className="tool-hero-actions">
-                <a className="button primary" href={`${base}downloads/danmu-saver-v1.3-macOS.zip`} download>下载 macOS 版</a>
+                <a className="button primary" href={`${base}downloads/danmu-saver-v1.4-macOS.zip`} download>下载 macOS 版</a>
                 <span>Apple Silicon · macOS 13+ · 2 MB</span>
               </div>
             </div>
@@ -954,8 +954,8 @@ function DanmuSaverPage() {
           <div className="tool-feature-grid" data-reveal>
             <article>
               <span>01</span>
-              <h3>RGB 富文本</h3>
-              <p>选择内容框里的任意文字，使用完整 RGB 色谱改变颜色，或单独加粗。</p>
+              <h3>圆形色谱 + RGB</h3>
+              <p>用紧凑圆形色谱快速选色，也可直接输入 0–255 的 R/G/B 数值；选中文字即可局部上色。</p>
             </article>
             <article>
               <span>02</span>
@@ -988,10 +988,10 @@ function DanmuSaverPage() {
           <div className="tool-download-panel" data-reveal>
             <div>
               <span>Latest release</span>
-              <strong>弹幕屏保 v1.3</strong>
+              <strong>弹幕屏保 v1.4</strong>
               <small>2026.07 · Apple Silicon</small>
             </div>
-            <a className="button primary" href={`${base}downloads/danmu-saver-v1.3-macOS.zip`} download>免费下载 .zip</a>
+            <a className="button primary" href={`${base}downloads/danmu-saver-v1.4-macOS.zip`} download>免费下载 .zip</a>
           </div>
           <p className="tool-security-note">说明：这是菜单栏式全屏屏保工具，不替代 macOS 的系统锁屏与安全验证。</p>
         </section>
