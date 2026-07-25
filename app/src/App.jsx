@@ -949,6 +949,11 @@ function ZhuoQianPage() {
           </div>
         </section>
 
+        <section className="tool-minimal-uses">
+          <h2>首次打开方式</h2>
+          <p>下载解压后先拖入“应用程序”，再按住 Control 点击“桌签”并选择“打开”。若仍被拦截，请前往“系统设置 → 隐私与安全”选择“仍要打开”。</p>
+        </section>
+
         <figure className="tool-settings-shot">
           <div className="tool-settings-frame tool-settings-frame-widget">
             <img src={asset("zhuoqian-app.jpg")} alt="桌签应用界面，展示待办任务、完成归档与完成时间" />
