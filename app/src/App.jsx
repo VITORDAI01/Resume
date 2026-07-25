@@ -268,11 +268,11 @@ const projects = [
     date: "2026.07",
     image: "zhuoqian-icon.png",
     alt: "桌签 macOS 应用图标",
-    summary: "把轻量待办做成常驻桌面的玻璃便签：首次启动为空，无论是否置顶，整张便签都可拖动，并支持缩放、逐条编辑和完成归档。",
-    tags: ["macOS App", "SwiftUI / AppKit", "产品设计"],
+    summary: "把轻量待办做成原生桌面小组件：系统负责摆放和尺寸，组件里直接勾选，点“＋”即可在鼠标旁快速录入。",
+    tags: ["WidgetKit", "SwiftUI / AppKit", "产品设计"],
     href: "#/tools/zhuoqian",
-    downloadHref: "downloads/zhuoqian-v1.3-macOS.zip",
-    downloadLabel: "直接下载 v1.3",
+    downloadHref: "downloads/zhuoqian-v2.0-macOS.zip",
+    downloadLabel: "直接下载 v2.0",
   },
   {
     id: "danmu-saver",
@@ -940,28 +940,28 @@ function ZhuoQianPage() {
 
         <section className="tool-minimal-hero">
           <img src={asset("zhuoqian-icon.png")} alt="桌签应用图标" />
-          <span>macOS 桌面应用 · v1.3</span>
+          <span>macOS 桌面小组件 · v2.0</span>
           <h1>桌签</h1>
-          <p className="tool-minimal-copy">一张安静留在桌面上的待办便签。首次启动保持空白，无论是否置顶，整张便签都能拖动，并可自由缩放；任务完成后自动归档并留下日期。</p>
+          <p className="tool-minimal-copy">一张真正留在桌面上的待办小组件。位置和尺寸由 macOS 管理；组件里直接勾选完成，点“＋”会在鼠标旁弹出输入条，回车即添加并自动关闭。</p>
           <div className="tool-minimal-actions">
-            <a href={`${base}downloads/zhuoqian-v1.3-macOS.zip`} download>下载 macOS 版</a>
+            <a href={`${base}downloads/zhuoqian-v2.0-macOS.zip`} download>下载 macOS 版</a>
             <span>Apple Silicon · macOS 14+</span>
           </div>
         </section>
 
         <section className="tool-minimal-uses">
           <h2>首次打开方式</h2>
-          <p>下载解压后先拖入“应用程序”，再按住 Control 点击“桌签”并选择“打开”。若仍被拦截，请前往“系统设置 → 隐私与安全”选择“仍要打开”。</p>
+          <p>下载解压后拖入“应用程序”，按住 Control 点击“桌签”并选择“打开”。随后右键桌面 →“编辑小组件”→ 搜索“桌签”，选择中号或大号添加。</p>
         </section>
 
         <figure className="tool-settings-shot">
           <div className="tool-settings-frame tool-settings-frame-widget">
             <img src={asset("zhuoqian-app.jpg")} alt="桌签应用首次启动时的空白待办界面" />
           </div>
-          <figcaption>v1.3 无论是否置顶，整张便签都可拖动，右下角可缩放。</figcaption>
+          <figcaption>v2.0 由 WidgetKit 管理桌面位置与尺寸；任务管理页保留逐条编辑和完成归档。</figcaption>
         </figure>
 
-        <p className="tool-minimal-note">任务数据只保存在本机，不需要账号。应用支持所有桌面空间，也可在菜单中切换“始终置顶”和“登录时启动”。</p>
+        <p className="tool-minimal-note">任务数据只保存在本机，不需要账号。菜单栏可随时快速添加、管理任务或刷新桌面小组件。</p>
       </main>
       <footer className="tool-minimal-footer"><span>© 2026 VITOR DAI</span><a href="#/tools">更多工具</a></footer>
     </div>
