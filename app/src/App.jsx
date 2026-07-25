@@ -263,6 +263,17 @@ const internships = [
 
 const projects = [
   {
+    id: "danmu-saver",
+    title: "弹幕屏保：macOS 富文本弹幕工具",
+    date: "2026.07",
+    image: "danmu-saver-icon.png",
+    alt: "弹幕屏保 macOS 应用图标",
+    summary: "从实际需求出发完成产品设计、Swift / AppKit 开发、视觉与发布，支持选区变色加粗、整体实时预览、轨道防重叠和多显示器播放。",
+    tags: ["macOS App", "Swift / AppKit", "产品设计"],
+    href: "#/tools/danmu-saver",
+    downloadHref: "downloads/danmu-saver-v1.4-macOS.zip",
+  },
+  {
     id: "jellyfish-xhs-news",
     title: "AI 小红书创作 Skill 与自动化工作流",
     date: "2026.05",
@@ -496,16 +507,21 @@ function HomePage({ initialTarget }) {
           <SectionHeading eyebrow="Projects" title="项目经历" />
           <div className="project-list">
             {projects.map((project) => {
-              const ProjectShell = project.href ? "a" : "article";
+              const ProjectShell = project.downloadHref ? "article" : project.href ? "a" : "article";
               return (
-              <ProjectShell className="project-row" href={project.href} data-reveal key={project.title}>
-                <div className="project-image"><img src={asset(project.image)} alt={project.alt} /></div>
+              <ProjectShell className="project-row" {...(!project.downloadHref && project.href ? { href: project.href } : {})} data-reveal key={project.title}>
+                <div className={`project-image${project.id === "danmu-saver" ? " project-image-app" : ""}`}><img src={asset(project.image)} alt={project.alt} /></div>
                 <div className="project-copy">
                   <span className="project-date">{project.date}</span>
                   <h3>{project.title}</h3>
                   <p>{project.summary}</p>
                   <div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-                  {project.href && <span className="project-link">查看详情</span>}
+                  {project.downloadHref ? (
+                    <div className="project-actions">
+                      <a className="project-link" href={project.href}>查看详情</a>
+                      <a className="project-link project-download" href={`${base}${project.downloadHref}`} download>直接下载 v1.4</a>
+                    </div>
+                  ) : project.href && <span className="project-link">查看详情</span>}
                 </div>
               </ProjectShell>
             );

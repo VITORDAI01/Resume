@@ -121,12 +121,16 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .project-row:hover { transform: translateY(-7px); box-shadow: 0 25px 70px rgba(28,55,110,.12); }
 .project-image { min-height: 310px; overflow: hidden; background: #eef2f8; }
 .project-image img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .8s cubic-bezier(.2,.8,.2,1); }
+.project-image-app { display: grid; place-items: center; background: radial-gradient(circle at 50% 42%, #fff 0 16%, #eef3ff 48%, #dde7ff 100%); }
+.project-image-app img { width: 46%; height: auto; max-width: 190px; border-radius: 22%; box-shadow: 0 24px 55px rgba(28,55,110,.2); }
 .project-row:hover img { transform: scale(1.035); }
 .project-copy { align-self: center; padding: 44px 52px; }
 .project-date { color: var(--blue); font: 11px "IBM Plex Mono", monospace; }
 .project-copy h3 { margin: 12px 0 18px; font-size: 28px; font-weight: 500; }
 .project-copy p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.9; }
 .project-link { display: inline-block; margin-top: 24px; color: var(--blue); font-size: 12px; }
+.project-actions { display: flex; flex-wrap: wrap; gap: 22px; }
+.project-download { font-weight: 600; }
 .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
 .tag-list span { padding: 7px 11px; background: rgba(55,107,255,.07); color: #4f5c70; border-radius: 4px; font-size: 11px; }
 
