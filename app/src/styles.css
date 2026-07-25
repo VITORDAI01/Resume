@@ -339,6 +339,8 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
 .tool-simple-row img { width: 68px; height: 68px; border-radius: 16px; box-shadow: 0 10px 24px rgba(12,19,32,.13); }
 .tool-simple-row h2 { margin: 0 0 7px; font-size: 23px; font-weight: 500; letter-spacing: -.025em; }
 .tool-simple-row p { margin: 0; color: var(--muted); font-size: 14px; }
+.tool-simple-row .tool-simple-reason { max-width: 760px; margin-top: 10px; font-size: 13px; line-height: 1.7; }
+.tool-simple-reason b { margin-right: 8px; color: var(--blue); font-size: 11px; font-weight: 500; letter-spacing: .04em; }
 .tool-simple-row > span { color: var(--muted); font-size: 12px; }
 .tool-simple-row > strong { color: var(--blue); font-size: 20px; font-weight: 400; transition: transform .2s ease; }
 .tool-simple-row:hover > strong { transform: translateX(5px); }

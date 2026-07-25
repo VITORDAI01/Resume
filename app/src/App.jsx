@@ -907,6 +907,7 @@ function ToolsPage() {
             <div>
               <h2>桌签</h2>
               <p>一直留在桌面的轻量待办便签。</p>
+              <p className="tool-simple-reason"><b>为什么做</b>Mac 原生便签不够好看，也不够顺手；常见 Todo 工具又太重、往往还要付费，所以干脆自己做一个只保留必要功能的。</p>
             </div>
             <span>macOS · 免费下载</span>
             <strong aria-hidden="true">→</strong>
@@ -916,6 +917,7 @@ function ToolsPage() {
             <div>
               <h2>弹幕屏保</h2>
               <p>闲置时自动播放自定义文字弹幕。</p>
+              <p className="tool-simple-reason"><b>为什么做</b>展会上观众多时，一个人一次只能接待一位；重复的基础介绍可以交给屏幕持续讲解、展示并烘托氛围，即使人暂时不在，也能先招呼一部分观众。</p>
             </div>
             <span>macOS · 免费下载</span>
             <strong aria-hidden="true">→</strong>
