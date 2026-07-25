@@ -268,11 +268,11 @@ const projects = [
     date: "2026.07",
     image: "zhuoqian-icon.png",
     alt: "桌签 macOS 应用图标",
-    summary: "把轻量待办做成常驻桌面的玻璃便签：支持逐条编辑、勾选自动归档、完成日期留档，并用本周完成进度提供克制的成就反馈。",
+    summary: "把轻量待办做成常驻桌面的玻璃便签：首次启动为空，支持拖动缩放、逐条编辑、勾选自动归档和完成日期留档。",
     tags: ["macOS App", "SwiftUI / AppKit", "产品设计"],
     href: "#/tools/zhuoqian",
-    downloadHref: "downloads/zhuoqian-v1.0-macOS.zip",
-    downloadLabel: "直接下载 v1.0",
+    downloadHref: "downloads/zhuoqian-v1.1-macOS.zip",
+    downloadLabel: "直接下载 v1.1",
   },
   {
     id: "danmu-saver",
@@ -940,11 +940,11 @@ function ZhuoQianPage() {
 
         <section className="tool-minimal-hero">
           <img src={asset("zhuoqian-icon.png")} alt="桌签应用图标" />
-          <span>macOS 桌面应用 · v1.0</span>
+          <span>macOS 桌面应用 · v1.1</span>
           <h1>桌签</h1>
-          <p className="tool-minimal-copy">一张安静留在桌面上的待办便签。每条任务都能直接编辑，勾选后自动移入底部归档，并留下完成日期。</p>
+          <p className="tool-minimal-copy">一张安静留在桌面上的待办便签。首次启动保持空白，可自由拖动和缩放；任务勾选后自动移入底部归档，并留下完成日期。</p>
           <div className="tool-minimal-actions">
-            <a href={`${base}downloads/zhuoqian-v1.0-macOS.zip`} download>下载 macOS 版</a>
+            <a href={`${base}downloads/zhuoqian-v1.1-macOS.zip`} download>下载 macOS 版</a>
             <span>Apple Silicon · macOS 14+</span>
           </div>
         </section>
@@ -956,9 +956,9 @@ function ZhuoQianPage() {
 
         <figure className="tool-settings-shot">
           <div className="tool-settings-frame tool-settings-frame-widget">
-            <img src={asset("zhuoqian-app.jpg")} alt="桌签应用界面，展示待办任务、完成归档与完成时间" />
+            <img src={asset("zhuoqian-app.jpg")} alt="桌签应用首次启动时的空白待办界面" />
           </div>
-          <figcaption>已完成默认收起；展开后可以回看每项任务的完成时间。</figcaption>
+          <figcaption>v1.1 首次启动为空白，右下角拖动可缩放窗口。</figcaption>
         </figure>
 
         <p className="tool-minimal-note">任务数据只保存在本机，不需要账号。应用支持所有桌面空间，也可在菜单中切换“始终置顶”和“登录时启动”。</p>
