@@ -263,30 +263,6 @@ const internships = [
 
 const projects = [
   {
-    id: "zhuoqian",
-    title: "桌签",
-    date: "2026.07",
-    image: "zhuoqian-icon.png",
-    alt: "桌签 macOS 应用图标",
-    summary: "把轻量待办做成原生桌面小组件：系统负责摆放和尺寸，组件里直接勾选，点“＋”即可在鼠标旁快速录入。",
-    tags: ["WidgetKit", "SwiftUI / AppKit", "产品设计"],
-    href: "#/tools/zhuoqian",
-    downloadHref: "downloads/zhuoqian-v2.0.3-macOS.zip",
-    downloadLabel: "直接下载 v2.0.3",
-  },
-  {
-    id: "danmu-saver",
-    title: "弹幕屏保",
-    date: "2026.07",
-    image: "danmu-saver-icon.png",
-    alt: "弹幕屏保 macOS 应用图标",
-    summary: "从实际需求出发完成产品设计、Swift / AppKit 开发、视觉与发布，支持选区变色加粗、整体实时预览、轨道防重叠和多显示器播放。",
-    tags: ["macOS App", "Swift / AppKit", "产品设计"],
-    href: "#/tools/danmu-saver",
-    downloadHref: "downloads/danmu-saver-v1.4-macOS.zip",
-    downloadLabel: "直接下载 v1.4",
-  },
-  {
     id: "jellyfish-xhs-news",
     title: "AI 小红书创作 Skill 与自动化工作流",
     date: "2026.05",
@@ -420,7 +396,6 @@ function Header({ detail = false }) {
         <a href={navHref("education")} onClick={() => setOpen(false)}>教育</a>
         <a href={navHref("experience")} onClick={() => setOpen(false)}>实习经历</a>
         <a href={navHref("projects")} onClick={() => setOpen(false)}>项目经历</a>
-        <a href="#/tools" onClick={() => setOpen(false)}>工具箱</a>
         <a href={navHref("skills")} onClick={() => setOpen(false)}>能力</a>
         <a href={navHref("contact")} onClick={() => setOpen(false)}>联系</a>
       </nav>
@@ -520,21 +495,16 @@ function HomePage({ initialTarget }) {
           <SectionHeading eyebrow="Projects" title="项目经历" />
           <div className="project-list">
             {projects.map((project) => {
-              const ProjectShell = project.downloadHref ? "article" : project.href ? "a" : "article";
+              const ProjectShell = project.href ? "a" : "article";
               return (
-              <ProjectShell className="project-row" {...(!project.downloadHref && project.href ? { href: project.href } : {})} data-reveal key={project.title}>
-                <div className={`project-image${["zhuoqian", "danmu-saver"].includes(project.id) ? " project-image-app" : ""}`}><img src={asset(project.image)} alt={project.alt} /></div>
+              <ProjectShell className="project-row" {...(project.href ? { href: project.href } : {})} data-reveal key={project.title}>
+                <div className="project-image"><img src={asset(project.image)} alt={project.alt} /></div>
                 <div className="project-copy">
                   <span className="project-date">{project.date}</span>
                   <h3>{project.title}</h3>
                   <p>{project.summary}</p>
                   <div className="tag-list">{project.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-                  {project.downloadHref ? (
-                    <div className="project-actions">
-                      <a className="project-link" href={project.href}>查看详情</a>
-                      <a className="project-link project-download" href={`${base}${project.downloadHref}`} download>{project.downloadLabel}</a>
-                    </div>
-                  ) : project.href && <span className="project-link">查看详情</span>}
+                  {project.href && <span className="project-link">查看详情</span>}
                 </div>
               </ProjectShell>
             );
@@ -888,129 +858,6 @@ function ProjectDetailPage({ item }) {
   );
 }
 
-function ToolsPage() {
-  useMotion();
-  return (
-    <div className="page-shell detail-page tools-page">
-      <div className="scroll-progress" />
-      <Header detail />
-      <main className="tools-simple-main">
-        <section className="tools-simple-intro">
-          <span>Vitor Tools</span>
-          <h1>Vitor 工具箱</h1>
-          <p>一些自己做、自己用，也愿意分享出来的小工具。</p>
-        </section>
-
-        <section className="tools-simple-list" aria-label="可用工具">
-          <a className="tool-simple-row" href="#/tools/zhuoqian">
-            <img src={asset("zhuoqian-icon.png")} alt="" />
-            <div>
-              <h2>桌签</h2>
-              <p>一直留在桌面的轻量待办便签。</p>
-              <p className="tool-simple-reason"><b>为什么做</b>Mac 原生便签不够好看，也不够顺手；常见 Todo 工具又太重、往往还要付费，所以干脆自己做一个只保留必要功能的。</p>
-            </div>
-            <span>macOS · 免费下载</span>
-            <strong aria-hidden="true">→</strong>
-          </a>
-          <a className="tool-simple-row" href="#/tools/danmu-saver">
-            <img src={asset("danmu-saver-icon.png")} alt="" />
-            <div>
-              <h2>弹幕屏保</h2>
-              <p>闲置时自动播放自定义文字弹幕。</p>
-              <p className="tool-simple-reason"><b>为什么做</b>展会上观众多时，一个人一次只能接待一位；重复的基础介绍可以交给屏幕持续讲解、展示并烘托氛围，即使人暂时不在，也能先招呼一部分观众。</p>
-            </div>
-            <span>macOS · 免费下载</span>
-            <strong aria-hidden="true">→</strong>
-          </a>
-        </section>
-      </main>
-      <footer><span>© 2026 VITOR DAI</span><a href="mailto:vitord@qq.com">联系我</a></footer>
-    </div>
-  );
-}
-
-function ZhuoQianPage() {
-  useMotion();
-  return (
-    <div className="tool-minimal-page">
-      <header className="tool-minimal-header">
-        <a href="#/tools">Vitor 工具箱</a>
-        <a href="#/">返回简历</a>
-      </header>
-      <main className="tool-minimal-main">
-        <a className="tool-minimal-back" href="#/tools">← 返回工具箱</a>
-
-        <section className="tool-minimal-hero">
-          <img src={asset("zhuoqian-icon.png")} alt="桌签应用图标" />
-          <span>macOS 桌面小组件 · v2.0.3</span>
-          <h1>桌签</h1>
-          <p className="tool-minimal-copy">一张真正留在桌面上的待办小组件。位置和尺寸由 macOS 管理；组件里直接勾选完成，点“＋”会在鼠标旁弹出输入条，回车即添加，点“×”则关闭并丢弃草稿。</p>
-          <div className="tool-minimal-actions">
-            <a href={`${base}downloads/zhuoqian-v2.0.3-macOS.zip`} download>下载 macOS 版</a>
-            <span>Apple Silicon · macOS 14+</span>
-          </div>
-        </section>
-
-        <section className="tool-minimal-uses">
-          <h2>首次打开方式</h2>
-          <p>下载解压后拖入“应用程序”，按住 Control 点击“桌签”并选择“打开”。随后右键桌面 →“编辑小组件”→ 搜索“桌签”，选择中号或大号添加。</p>
-        </section>
-
-        <figure className="tool-settings-shot">
-          <div className="tool-settings-frame tool-settings-frame-widget">
-            <img src={asset("zhuoqian-app.jpg")} alt="桌签应用首次启动时的空白待办界面" />
-          </div>
-          <figcaption>v2.0.3 为快速输入增加明确的关闭按钮；关闭会清空未提交内容，避免误触后留下草稿。</figcaption>
-        </figure>
-
-        <p className="tool-minimal-note">任务数据只保存在本机，不需要账号。菜单栏可随时快速添加、管理任务或刷新桌面小组件。</p>
-      </main>
-      <footer className="tool-minimal-footer"><span>© 2026 VITOR DAI</span><a href="#/tools">更多工具</a></footer>
-    </div>
-  );
-}
-
-function DanmuSaverPage() {
-  useMotion();
-  return (
-    <div className="tool-minimal-page">
-      <header className="tool-minimal-header">
-        <a href="#/tools">Vitor 工具箱</a>
-        <a href="#/">返回简历</a>
-      </header>
-      <main className="tool-minimal-main">
-        <a className="tool-minimal-back" href="#/tools">← 返回工具箱</a>
-
-        <section className="tool-minimal-hero">
-          <img src={asset("danmu-saver-icon.png")} alt="弹幕屏保应用图标" />
-          <span>macOS 菜单栏应用 · v1.4</span>
-          <h1>弹幕屏保</h1>
-          <p className="tool-minimal-copy">写下几句话，设置颜色、粗体、速度和等待时间。电脑闲置后，它会自动全屏播放；移动鼠标或按键即可退出。</p>
-          <div className="tool-minimal-actions">
-            <a href={`${base}downloads/danmu-saver-v1.4-macOS.zip`} download>下载 macOS 版</a>
-            <span>Apple Silicon · macOS 13+</span>
-          </div>
-        </section>
-
-        <section className="tool-minimal-uses">
-          <h2>适用场景</h2>
-          <p>适合在展会、门店、工作室或个人设备闲置时，循环展示欢迎语、活动提示、公告和其他自定义文字。</p>
-        </section>
-
-        <figure className="tool-settings-shot">
-          <div className="tool-settings-frame">
-            <img src={asset("danmu-saver-settings.png")} alt="弹幕屏保设置界面，可编辑弹幕内容、颜色、等待时间、滚动速度和文字大小" />
-          </div>
-          <figcaption>设置界面：内容和样式都在一个窗口里完成。</figcaption>
-        </figure>
-
-        <p className="tool-minimal-note">所有内容保存在本地，不需要账号，也不会上传文字。它是全屏展示工具，不替代 macOS 的系统锁屏。</p>
-      </main>
-      <footer className="tool-minimal-footer"><span>© 2026 VITOR DAI</span><a href="#/tools">更多工具</a></footer>
-    </div>
-  );
-}
-
 function NotFound() {
   return <main className="not-found"><p>这个页面暂时不存在。</p><a className="button primary" href="#/">返回首页</a></main>;
 }
@@ -1019,19 +866,10 @@ export function App() {
   const route = useHashRoute();
   const detailId = useMemo(() => route.match(/^#\/experience\/([^/]+)/)?.[1], [route]);
   const projectId = useMemo(() => route.match(/^#\/project\/([^/]+)/)?.[1], [route]);
-  const toolId = useMemo(() => route.match(/^#\/tools\/([^/]+)/)?.[1], [route]);
   const section = useMemo(() => route.match(/^#\/section\/([^/]+)/)?.[1], [route]);
   let page;
-  if (toolId) {
-    if (toolId === "zhuoqian") {
-      page = <ZhuoQianPage />;
-    } else if (toolId === "danmu-saver") {
-      page = <DanmuSaverPage />;
-    } else {
-      page = <NotFound />;
-    }
-  } else if (route === "#/tools") {
-    page = <ToolsPage />;
+  if (route === "#/tools" || route.startsWith("#/tools/")) {
+    page = <NotFound />;
   } else if (projectId) {
     const project = projects.find((entry) => entry.id === projectId);
     page = project ? <ProjectDetailPage item={project} /> : <NotFound />;
@@ -1041,5 +879,5 @@ export function App() {
     const item = internships.find((entry) => entry.id === detailId);
     page = item ? <DetailPage item={item} /> : <NotFound />;
   }
-  return <>{page}{!route.startsWith("#/tools") && <AskVitor />}</>;
+  return <>{page}<AskVitor /></>;
 }
