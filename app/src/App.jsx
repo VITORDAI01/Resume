@@ -396,6 +396,7 @@ function Header({ detail = false }) {
         <a href={navHref("education")} onClick={() => setOpen(false)}>教育</a>
         <a href={navHref("experience")} onClick={() => setOpen(false)}>实习经历</a>
         <a href={navHref("projects")} onClick={() => setOpen(false)}>项目经历</a>
+        <a href="#/tools" onClick={() => setOpen(false)}>小工具</a>
         <a href={navHref("skills")} onClick={() => setOpen(false)}>能力</a>
         <a href={navHref("contact")} onClick={() => setOpen(false)}>联系</a>
       </nav>
@@ -858,6 +859,148 @@ function ProjectDetailPage({ item }) {
   );
 }
 
+function DanmuPreview({ compact = false }) {
+  return (
+    <div className={compact ? "danmu-preview danmu-preview-compact" : "danmu-preview"} aria-label="弹幕屏保整体效果预览">
+      <div className="danmu-preview-bar">
+        <span /><span /><span />
+        <small>弹幕屏保 · PREVIEW</small>
+      </div>
+      <div className="danmu-stage">
+        <p className="danmu-line danmu-line-one">保持好奇，<strong>保持创造。</strong></p>
+        <p className="danmu-line danmu-line-two">今天也要做点<span>有意思的事</span></p>
+        <p className="danmu-line danmu-line-three"><strong>Ideas</strong> become things.</p>
+        <p className="danmu-line danmu-line-four">让屏幕替你说句话 ✦</p>
+        <div className="danmu-stage-meta">
+          <span>RGB</span>
+          <span>RICH TEXT</span>
+          <span>OFFLINE</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ToolsPage() {
+  useMotion();
+  return (
+    <div className="page-shell detail-page tools-page">
+      <div className="scroll-progress" />
+      <Header detail />
+      <main>
+        <section className="tools-landing-hero">
+          <span className="eyebrow">Vitor’s Tiny Tools</span>
+          <h1>小工具，<br />解决一点具体问题。</h1>
+          <p>这里收录我做的轻量产品。它们不追求复杂，只希望把一个小想法做得顺手、好看、真的能用。</p>
+        </section>
+
+        <section className="tools-catalog" aria-labelledby="tools-catalog-title">
+          <div className="tools-catalog-heading" data-reveal>
+            <span>01 / AVAILABLE NOW</span>
+            <h2 id="tools-catalog-title">弹幕屏保</h2>
+          </div>
+          <a className="tool-showcase-card" href="#/tools/danmu-saver" data-reveal>
+            <div className="tool-showcase-copy">
+              <img src={asset("danmu-saver-icon.png")} alt="弹幕屏保应用图标" />
+              <div>
+                <span className="tool-version">macOS · v1.2</span>
+                <h3>让自己的话，在屏幕上飘过去。</h3>
+                <p>输入几句话，自由设置局部颜色和粗体，待机后自动播放成全屏弹幕。</p>
+                <div className="tag-list"><span>RGB 富文本</span><span>整体实时预览</span><span>本地运行</span></div>
+                <strong>查看并下载 ↗</strong>
+              </div>
+            </div>
+            <DanmuPreview compact />
+          </a>
+        </section>
+      </main>
+      <footer><span>© 2026 VITOR DAI</span><a href="mailto:vitord@qq.com">联系我</a></footer>
+    </div>
+  );
+}
+
+function DanmuSaverPage() {
+  useMotion();
+  return (
+    <div className="page-shell detail-page tool-detail-page">
+      <div className="scroll-progress" />
+      <Header detail />
+      <main>
+        <section className="tool-hero">
+          <a className="back-link" href="#/tools">返回小工具</a>
+          <div className="tool-hero-grid">
+            <div className="tool-hero-copy" data-reveal>
+              <div className="tool-identity">
+                <img src={asset("danmu-saver-icon.png")} alt="弹幕屏保应用图标" />
+                <span>弹幕屏保</span>
+              </div>
+              <span className="eyebrow">Danmu Saver · v1.2</span>
+              <h1>让自己的话，<br />在屏幕上飘过去。</h1>
+              <p>一个轻量的 macOS 菜单栏小工具。写下想看的句子，设置颜色和粗体，空闲后自动进入全屏弹幕。</p>
+              <div className="tool-hero-actions">
+                <a className="button primary" href={`${base}downloads/danmu-saver-v1.2-macOS.zip`} download>下载 macOS 版</a>
+                <span>Apple Silicon · macOS 13+ · 2 MB</span>
+              </div>
+            </div>
+            <DanmuPreview />
+          </div>
+        </section>
+
+        <section className="tool-section">
+          <div className="tool-section-heading" data-reveal>
+            <span className="eyebrow">Features</span>
+            <h2>一句话，也可以有自己的样子。</h2>
+          </div>
+          <div className="tool-feature-grid" data-reveal>
+            <article>
+              <span>01</span>
+              <h3>RGB 富文本</h3>
+              <p>选择内容框里的任意文字，使用完整 RGB 色谱改变颜色，或单独加粗。</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>整体实时预览</h3>
+              <p>下方预览会呈现全部内容的真实样式，不只显示光标所在行。</p>
+            </article>
+            <article>
+              <span>03</span>
+              <h3>空闲自动播放</h3>
+              <p>按你设置的等待时间自动进入全屏，也可以从菜单栏立即开始。</p>
+            </article>
+            <article>
+              <span>04</span>
+              <h3>安静地待在本地</h3>
+              <p>无需账号，不上传文字；支持多显示器，移动鼠标或按键即可退出。</p>
+            </article>
+          </div>
+        </section>
+
+        <section className="tool-section tool-install-section">
+          <div className="tool-section-heading" data-reveal>
+            <span className="eyebrow">Install</span>
+            <h2>下载后，三步开始。</h2>
+          </div>
+          <ol className="tool-install-steps" data-reveal>
+            <li><span>01</span><div><h3>下载并解压</h3><p>打开 ZIP 文件，得到「弹幕屏保」应用。</p></div></li>
+            <li><span>02</span><div><h3>移入应用程序</h3><p>拖入“应用程序”文件夹，再打开一次完成初始化。</p></div></li>
+            <li><span>03</span><div><h3>写下想说的话</h3><p>设置文字样式和等待时间，保存后它会在菜单栏待命。</p></div></li>
+          </ol>
+          <div className="tool-download-panel" data-reveal>
+            <div>
+              <span>Latest release</span>
+              <strong>弹幕屏保 v1.2</strong>
+              <small>2026.07 · Apple Silicon</small>
+            </div>
+            <a className="button primary" href={`${base}downloads/danmu-saver-v1.2-macOS.zip`} download>免费下载 .zip</a>
+          </div>
+          <p className="tool-security-note">说明：这是菜单栏式全屏屏保工具，不替代 macOS 的系统锁屏与安全验证。</p>
+        </section>
+      </main>
+      <footer><span>© 2026 VITOR DAI</span><a href="#/tools">更多小工具</a></footer>
+    </div>
+  );
+}
+
 function NotFound() {
   return <main className="not-found"><p>这个页面暂时不存在。</p><a className="button primary" href="#/">返回首页</a></main>;
 }
@@ -866,9 +1009,14 @@ export function App() {
   const route = useHashRoute();
   const detailId = useMemo(() => route.match(/^#\/experience\/([^/]+)/)?.[1], [route]);
   const projectId = useMemo(() => route.match(/^#\/project\/([^/]+)/)?.[1], [route]);
+  const toolId = useMemo(() => route.match(/^#\/tools\/([^/]+)/)?.[1], [route]);
   const section = useMemo(() => route.match(/^#\/section\/([^/]+)/)?.[1], [route]);
   let page;
-  if (projectId) {
+  if (toolId) {
+    page = toolId === "danmu-saver" ? <DanmuSaverPage /> : <NotFound />;
+  } else if (route === "#/tools") {
+    page = <ToolsPage />;
+  } else if (projectId) {
     const project = projects.find((entry) => entry.id === projectId);
     page = project ? <ProjectDetailPage item={project} /> : <NotFound />;
   } else if (!detailId) {
