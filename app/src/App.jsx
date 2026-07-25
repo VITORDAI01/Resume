@@ -263,8 +263,20 @@ const internships = [
 
 const projects = [
   {
+    id: "zhuoqian",
+    title: "桌签",
+    date: "2026.07",
+    image: "zhuoqian-icon.png",
+    alt: "桌签 macOS 应用图标",
+    summary: "把轻量待办做成常驻桌面的玻璃便签：支持逐条编辑、勾选自动归档、完成日期留档，并用本周完成进度提供克制的成就反馈。",
+    tags: ["macOS App", "SwiftUI / AppKit", "产品设计"],
+    href: "#/tools/zhuoqian",
+    downloadHref: "downloads/zhuoqian-v1.0-macOS.zip",
+    downloadLabel: "直接下载 v1.0",
+  },
+  {
     id: "danmu-saver",
-    title: "弹幕屏保：macOS 富文本弹幕工具",
+    title: "弹幕屏保",
     date: "2026.07",
     image: "danmu-saver-icon.png",
     alt: "弹幕屏保 macOS 应用图标",
@@ -272,6 +284,7 @@ const projects = [
     tags: ["macOS App", "Swift / AppKit", "产品设计"],
     href: "#/tools/danmu-saver",
     downloadHref: "downloads/danmu-saver-v1.4-macOS.zip",
+    downloadLabel: "直接下载 v1.4",
   },
   {
     id: "jellyfish-xhs-news",
@@ -407,7 +420,7 @@ function Header({ detail = false }) {
         <a href={navHref("education")} onClick={() => setOpen(false)}>教育</a>
         <a href={navHref("experience")} onClick={() => setOpen(false)}>实习经历</a>
         <a href={navHref("projects")} onClick={() => setOpen(false)}>项目经历</a>
-        <a href="#/tools" onClick={() => setOpen(false)}>小工具</a>
+        <a href="#/tools" onClick={() => setOpen(false)}>工具箱</a>
         <a href={navHref("skills")} onClick={() => setOpen(false)}>能力</a>
         <a href={navHref("contact")} onClick={() => setOpen(false)}>联系</a>
       </nav>
@@ -510,7 +523,7 @@ function HomePage({ initialTarget }) {
               const ProjectShell = project.downloadHref ? "article" : project.href ? "a" : "article";
               return (
               <ProjectShell className="project-row" {...(!project.downloadHref && project.href ? { href: project.href } : {})} data-reveal key={project.title}>
-                <div className={`project-image${project.id === "danmu-saver" ? " project-image-app" : ""}`}><img src={asset(project.image)} alt={project.alt} /></div>
+                <div className={`project-image${["zhuoqian", "danmu-saver"].includes(project.id) ? " project-image-app" : ""}`}><img src={asset(project.image)} alt={project.alt} /></div>
                 <div className="project-copy">
                   <span className="project-date">{project.date}</span>
                   <h3>{project.title}</h3>
@@ -519,7 +532,7 @@ function HomePage({ initialTarget }) {
                   {project.downloadHref ? (
                     <div className="project-actions">
                       <a className="project-link" href={project.href}>查看详情</a>
-                      <a className="project-link project-download" href={`${base}${project.downloadHref}`} download>直接下载 v1.4</a>
+                      <a className="project-link project-download" href={`${base}${project.downloadHref}`} download>{project.downloadLabel}</a>
                     </div>
                   ) : project.href && <span className="project-link">查看详情</span>}
                 </div>
@@ -875,58 +888,37 @@ function ProjectDetailPage({ item }) {
   );
 }
 
-function DanmuPreview({ compact = false }) {
-  return (
-    <div className={compact ? "danmu-preview danmu-preview-compact" : "danmu-preview"} aria-label="弹幕屏保整体效果预览">
-      <div className="danmu-preview-bar">
-        <span /><span /><span />
-        <small>弹幕屏保 · PREVIEW</small>
-      </div>
-      <div className="danmu-stage">
-        <p className="danmu-line danmu-line-one">保持好奇，<strong>保持创造。</strong></p>
-        <p className="danmu-line danmu-line-two">今天也要做点<span>有意思的事</span></p>
-        <p className="danmu-line danmu-line-three"><strong>Ideas</strong> become things.</p>
-        <p className="danmu-line danmu-line-four">让屏幕替你说句话 ✦</p>
-        <div className="danmu-stage-meta">
-          <span>RGB</span>
-          <span>RICH TEXT</span>
-          <span>OFFLINE</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function ToolsPage() {
   useMotion();
   return (
     <div className="page-shell detail-page tools-page">
       <div className="scroll-progress" />
       <Header detail />
-      <main>
-        <section className="tools-landing-hero">
-          <span className="eyebrow">Vitor’s Tiny Tools</span>
-          <h1>小工具，<br />解决一点具体问题。</h1>
-          <p>这里收录我做的轻量产品。它们不追求复杂，只希望把一个小想法做得顺手、好看、真的能用。</p>
+      <main className="tools-simple-main">
+        <section className="tools-simple-intro">
+          <span>Vitor Tools</span>
+          <h1>Vitor 工具箱</h1>
+          <p>一些自己做、自己用，也愿意分享出来的小工具。</p>
         </section>
 
-        <section className="tools-catalog" aria-labelledby="tools-catalog-title">
-          <div className="tools-catalog-heading" data-reveal>
-            <span>01 / AVAILABLE NOW</span>
-            <h2 id="tools-catalog-title">弹幕屏保</h2>
-          </div>
-          <a className="tool-showcase-card" href="#/tools/danmu-saver" data-reveal>
-            <div className="tool-showcase-copy">
-              <img src={asset("danmu-saver-icon.png")} alt="弹幕屏保应用图标" />
-              <div>
-                <span className="tool-version">macOS · v1.4</span>
-                <h3>让自己的话，在屏幕上飘过去。</h3>
-                <p>输入几句话，自由设置局部颜色和粗体，待机后自动播放成全屏弹幕。</p>
-                <div className="tag-list"><span>圆形色谱 + RGB</span><span>整体实时预览</span><span>轨道防重叠</span></div>
-                <strong>查看并下载 ↗</strong>
-              </div>
+        <section className="tools-simple-list" aria-label="可用工具">
+          <a className="tool-simple-row" href="#/tools/zhuoqian">
+            <img src={asset("zhuoqian-icon.png")} alt="" />
+            <div>
+              <h2>桌签</h2>
+              <p>一直留在桌面的轻量待办便签。</p>
             </div>
-            <DanmuPreview compact />
+            <span>macOS · 免费下载</span>
+            <strong aria-hidden="true">→</strong>
+          </a>
+          <a className="tool-simple-row" href="#/tools/danmu-saver">
+            <img src={asset("danmu-saver-icon.png")} alt="" />
+            <div>
+              <h2>弹幕屏保</h2>
+              <p>闲置时自动播放自定义文字弹幕。</p>
+            </div>
+            <span>macOS · 免费下载</span>
+            <strong aria-hidden="true">→</strong>
           </a>
         </section>
       </main>
@@ -935,84 +927,79 @@ function ToolsPage() {
   );
 }
 
+function ZhuoQianPage() {
+  useMotion();
+  return (
+    <div className="tool-minimal-page">
+      <header className="tool-minimal-header">
+        <a href="#/tools">Vitor 工具箱</a>
+        <a href="#/">返回简历</a>
+      </header>
+      <main className="tool-minimal-main">
+        <a className="tool-minimal-back" href="#/tools">← 返回工具箱</a>
+
+        <section className="tool-minimal-hero">
+          <img src={asset("zhuoqian-icon.png")} alt="桌签应用图标" />
+          <span>macOS 桌面应用 · v1.0</span>
+          <h1>桌签</h1>
+          <p className="tool-minimal-copy">一张安静留在桌面上的待办便签。每条任务都能直接编辑，勾选后自动移入底部归档，并留下完成日期。</p>
+          <div className="tool-minimal-actions">
+            <a href={`${base}downloads/zhuoqian-v1.0-macOS.zip`} download>下载 macOS 版</a>
+            <span>Apple Silicon · macOS 14+</span>
+          </div>
+        </section>
+
+        <figure className="tool-settings-shot">
+          <div className="tool-settings-frame tool-settings-frame-widget">
+            <img src={asset("zhuoqian-app.jpg")} alt="桌签应用界面，展示待办任务、完成归档与完成时间" />
+          </div>
+          <figcaption>已完成默认收起；展开后可以回看每项任务的完成时间。</figcaption>
+        </figure>
+
+        <p className="tool-minimal-note">任务数据只保存在本机，不需要账号。应用支持所有桌面空间，也可在菜单中切换“始终置顶”和“登录时启动”。</p>
+      </main>
+      <footer className="tool-minimal-footer"><span>© 2026 VITOR DAI</span><a href="#/tools">更多工具</a></footer>
+    </div>
+  );
+}
+
 function DanmuSaverPage() {
   useMotion();
   return (
-    <div className="page-shell detail-page tool-detail-page">
-      <div className="scroll-progress" />
-      <Header detail />
-      <main>
-        <section className="tool-hero">
-          <a className="back-link" href="#/tools">返回小工具</a>
-          <div className="tool-hero-grid">
-            <div className="tool-hero-copy" data-reveal>
-              <div className="tool-identity">
-                <img src={asset("danmu-saver-icon.png")} alt="弹幕屏保应用图标" />
-                <span>弹幕屏保</span>
-              </div>
-              <span className="eyebrow">Danmu Saver · v1.4</span>
-              <h1>让自己的话，<br />在屏幕上飘过去。</h1>
-              <p>一个轻量的 macOS 菜单栏小工具。写下想看的句子，设置颜色和粗体，空闲后自动进入全屏弹幕。</p>
-              <div className="tool-hero-actions">
-                <a className="button primary" href={`${base}downloads/danmu-saver-v1.4-macOS.zip`} download>下载 macOS 版</a>
-                <span>Apple Silicon · macOS 13+ · 2 MB</span>
-              </div>
-            </div>
-            <DanmuPreview />
+    <div className="tool-minimal-page">
+      <header className="tool-minimal-header">
+        <a href="#/tools">Vitor 工具箱</a>
+        <a href="#/">返回简历</a>
+      </header>
+      <main className="tool-minimal-main">
+        <a className="tool-minimal-back" href="#/tools">← 返回工具箱</a>
+
+        <section className="tool-minimal-hero">
+          <img src={asset("danmu-saver-icon.png")} alt="弹幕屏保应用图标" />
+          <span>macOS 菜单栏应用 · v1.4</span>
+          <h1>弹幕屏保</h1>
+          <p className="tool-minimal-copy">写下几句话，设置颜色、粗体、速度和等待时间。电脑闲置后，它会自动全屏播放；移动鼠标或按键即可退出。</p>
+          <div className="tool-minimal-actions">
+            <a href={`${base}downloads/danmu-saver-v1.4-macOS.zip`} download>下载 macOS 版</a>
+            <span>Apple Silicon · macOS 13+</span>
           </div>
         </section>
 
-        <section className="tool-section">
-          <div className="tool-section-heading" data-reveal>
-            <span className="eyebrow">Features</span>
-            <h2>一句话，也可以有自己的样子。</h2>
-          </div>
-          <div className="tool-feature-grid" data-reveal>
-            <article>
-              <span>01</span>
-              <h3>圆形色谱 + RGB</h3>
-              <p>用紧凑圆形色谱快速选色，也可直接输入 0–255 的 R/G/B 数值；选中文字即可局部上色。</p>
-            </article>
-            <article>
-              <span>02</span>
-              <h3>整体实时预览</h3>
-              <p>下方预览会呈现全部内容的真实样式，不只显示光标所在行。</p>
-            </article>
-            <article>
-              <span>03</span>
-              <h3>轨道防重叠</h3>
-              <p>按轨道计算前后弹幕的安全间距，长句循环出现也不会挤在一起。</p>
-            </article>
-            <article>
-              <span>04</span>
-              <h3>安静地待在本地</h3>
-              <p>无需账号，不上传文字；支持多显示器，移动鼠标或按键即可退出。</p>
-            </article>
-          </div>
+        <section className="tool-minimal-uses">
+          <h2>适用场景</h2>
+          <p>适合在展会、门店、工作室或个人设备闲置时，循环展示欢迎语、活动提示、公告和其他自定义文字。</p>
         </section>
 
-        <section className="tool-section tool-install-section">
-          <div className="tool-section-heading" data-reveal>
-            <span className="eyebrow">Install</span>
-            <h2>下载后，三步开始。</h2>
+        <figure className="tool-settings-shot">
+          <div className="tool-settings-frame">
+            <img src={asset("danmu-saver-settings.png")} alt="弹幕屏保设置界面，可编辑弹幕内容、颜色、等待时间、滚动速度和文字大小" />
           </div>
-          <ol className="tool-install-steps" data-reveal>
-            <li><span>01</span><div><h3>下载并解压</h3><p>打开 ZIP 文件，得到「弹幕屏保」应用。</p></div></li>
-            <li><span>02</span><div><h3>移入应用程序</h3><p>拖入“应用程序”文件夹，再打开一次完成初始化。</p></div></li>
-            <li><span>03</span><div><h3>写下想说的话</h3><p>设置文字样式和等待时间，保存后它会在菜单栏待命。</p></div></li>
-          </ol>
-          <div className="tool-download-panel" data-reveal>
-            <div>
-              <span>Latest release</span>
-              <strong>弹幕屏保 v1.4</strong>
-              <small>2026.07 · Apple Silicon</small>
-            </div>
-            <a className="button primary" href={`${base}downloads/danmu-saver-v1.4-macOS.zip`} download>免费下载 .zip</a>
-          </div>
-          <p className="tool-security-note">说明：这是菜单栏式全屏屏保工具，不替代 macOS 的系统锁屏与安全验证。</p>
-        </section>
+          <figcaption>设置界面：内容和样式都在一个窗口里完成。</figcaption>
+        </figure>
+
+        <p className="tool-minimal-note">所有内容保存在本地，不需要账号，也不会上传文字。它是全屏展示工具，不替代 macOS 的系统锁屏。</p>
       </main>
-      <footer><span>© 2026 VITOR DAI</span><a href="#/tools">更多小工具</a></footer>
+      <footer className="tool-minimal-footer"><span>© 2026 VITOR DAI</span><a href="#/tools">更多工具</a></footer>
     </div>
   );
 }
@@ -1029,7 +1016,13 @@ export function App() {
   const section = useMemo(() => route.match(/^#\/section\/([^/]+)/)?.[1], [route]);
   let page;
   if (toolId) {
-    page = toolId === "danmu-saver" ? <DanmuSaverPage /> : <NotFound />;
+    if (toolId === "zhuoqian") {
+      page = <ZhuoQianPage />;
+    } else if (toolId === "danmu-saver") {
+      page = <DanmuSaverPage />;
+    } else {
+      page = <NotFound />;
+    }
   } else if (route === "#/tools") {
     page = <ToolsPage />;
   } else if (projectId) {
@@ -1041,5 +1034,5 @@ export function App() {
     const item = internships.find((entry) => entry.id === detailId);
     page = item ? <DetailPage item={item} /> : <NotFound />;
   }
-  return <>{page}<AskVitor /></>;
+  return <>{page}{!route.startsWith("#/tools") && <AskVitor />}</>;
 }
