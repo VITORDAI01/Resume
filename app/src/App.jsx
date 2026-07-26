@@ -1179,11 +1179,11 @@ function KeyboardCleanerPage() {
 
         <section className="tool-minimal-hero">
           <img src={asset("keyboard-cleaner-icon.png")} alt="键盘清洁锁应用图标" />
-          <span>macOS 菜单栏应用 · v1.0.0</span>
+          <span>macOS 菜单栏应用 · v1.0.1</span>
           <h1>键盘清洁锁</h1>
-          <p className="tool-minimal-copy">点击“开始清洁”，3 秒后屏蔽当前登录会话里的按键和快捷键。鼠标与触控板保持可用，清洁结束后可随时恢复；5 分钟后也会自动解锁。</p>
+          <p className="tool-minimal-copy">点击“开始清洁”，3 秒后屏蔽当前登录会话里的按键和快捷键。锁定后不会自动解除，主窗口会始终置顶；清洁结束后，用鼠标或触控板点击“恢复键盘”。</p>
           <div className="tool-minimal-actions">
-            <a href={`${base}downloads/keyboard-cleaner-v1.0.0-macOS.zip`} download>下载 macOS 版</a>
+            <a href={`${base}downloads/keyboard-cleaner-v1.0.1-macOS.zip`} download>下载 macOS 版</a>
             <span>Apple Silicon · macOS 14+</span>
           </div>
         </section>
@@ -1197,10 +1197,10 @@ function KeyboardCleanerPage() {
           <div className="tool-settings-frame tool-settings-frame-widget">
             <img src={asset("keyboard-cleaner-app.jpg")} alt="键盘清洁锁主界面，包含权限状态、开始清洁按钮和自动恢复说明" />
           </div>
-          <figcaption>锁定期间，主窗口和菜单栏都可以用鼠标恢复键盘。</figcaption>
+          <figcaption>锁定期间窗口始终置顶，主界面和菜单栏都可以用鼠标恢复键盘。</figcaption>
         </figure>
 
-        <p className="tool-minimal-note">它不会断开或修改键盘硬件，而是在系统输入层临时拦截按键；不读取、不记录输入内容。退出应用或进程结束时，键盘会立即恢复。</p>
+        <p className="tool-minimal-note">它不会断开或修改键盘硬件，而是在系统输入层临时拦截按键；不读取、不记录输入内容。键盘只会在你手动点击恢复、退出应用或进程结束时解除锁定。</p>
       </main>
       <footer className="tool-minimal-footer"><span>© 2026 VITOR DAI</span><a href="#/tools">更多工具</a></footer>
     </div>
