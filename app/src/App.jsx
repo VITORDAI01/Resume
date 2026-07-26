@@ -263,6 +263,24 @@ const internships = [
 
 const projects = [
   {
+    id: "nba-draft-duel",
+    title: "《篮球教练》NBA 阵容模拟游戏",
+    date: "2026.07",
+    image: "basketball-coach-data-dashboard.png",
+    alt: "融合球员属性、投篮热区、轮换曲线和战术路线的篮球数据驾驶舱",
+    summary: "从五人选秀 MVP 迭代为完整的中文篮球策略游戏：十二人选秀、阵容适配、轮换管理、逐回合比赛与赛后复盘形成闭环。",
+    tags: ["产品设计与开发", "篮球数据建模", "比赛模拟引擎"],
+    href: "#/project/nba-draft-duel",
+    subtitle: "从一个可玩的选秀原型开始，逐步补齐真实数据、阵容管理、比赛引擎与可解释复盘",
+    results: [
+      ["528 名", "现役 NBA 球员完整中文资料"],
+      ["97%", "真实赛季与球权数据覆盖率"],
+      ["8 类", "可被策略影响的进攻方式"],
+      ["43 项", "覆盖数据、选秀与模拟逻辑的自动化测试"],
+    ],
+    reflection: "这次开发的核心，不是把篮球规则堆进一个随机数模拟器，而是把“为什么这套阵容有效”拆成能被数据表达、被用户操作、也能在赛后解释的机制。真实数据负责约束球员习惯，游戏规则负责形成决策，固定种子与自动化测试则保证系统可以持续校准。",
+  },
+  {
     id: "jellyfish-xhs-news",
     title: "AI 小红书创作 Skill 与自动化工作流",
     date: "2026.05",
@@ -803,6 +821,244 @@ function DetailPage({ item }) {
   );
 }
 
+function NbaProjectDetailPage({ item }) {
+  useMotion();
+  return (
+    <div className="page-shell detail-page nba-story-page">
+      <div className="scroll-progress" />
+      <Header detail />
+      <main>
+        <section className="nba-story-hero">
+          <img src={asset(item.image)} alt="" aria-hidden="true" />
+          <div className="nba-story-hero-shade" />
+          <div className="nba-story-hero-copy" data-reveal>
+            <span className="eyebrow">NBA Strategy Simulation · 2026.07</span>
+            <h1>{item.title}</h1>
+            <p>{item.subtitle}</p>
+            <div className="tag-list">{item.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+          </div>
+        </section>
+
+        <div className="nba-story-progress" aria-label="项目完整历程">
+          {["起点", "数据", "选秀", "适配", "比赛", "复盘", "现状"].map((label, index) => (
+            <span key={label}><b>{String(index + 1).padStart(2, "0")}</b>{label}</span>
+          ))}
+        </div>
+
+        <section className="nba-story-chapter" id="origin">
+          <div className="nba-story-marker"><span>01</span><small>ORIGIN</small></div>
+          <div className="nba-story-body" data-reveal>
+            <span className="eyebrow">先回答为什么做</span>
+            <h2>把“选几个喜欢的球星”变成一场真正需要决策的比赛</h2>
+            <p className="nba-story-lead">项目最初只是一个五人选秀 MVP：双方轮流从随机球队里挑人，选择一套攻防策略，然后让系统给出比赛结果。它先验证了最核心的乐趣——同一批球员在不同阵容和战术下，能不能产生不同结果。</p>
+            <p>但原型也很快暴露问题：只选五个人没有替补和体能管理，球员价值主要来自总评，位置只是标签，比赛结束后也很难说明为什么赢。于是项目目标从“做一个能出比分的选秀小游戏”，转向“让用户完整经历一次教练决策”。</p>
+          </div>
+        </section>
+
+        <section className="nba-story-chapter" id="data">
+          <div className="nba-story-marker"><span>02</span><small>DATA</small></div>
+          <div className="nba-story-body" data-reveal>
+            <span className="eyebrow">先让球员像真实的自己</span>
+            <h2>我不是直接“接一张球员表”，而是把三套数据加工成同一种球员语言</h2>
+            <p className="nba-story-lead">2K 数据回答“能力上限是什么”，真实赛季数据回答“这一季实际打成什么样”，球权与 Play Type 数据回答“他通常怎样参与一个回合”。我先离线抓取和合并，再把它们压缩成模拟器能够直接计算的球员画像。</p>
+            <div className="nba-story-detail-list">
+              <article className="nba-story-detail-row">
+                <span>01 · 建立底表</span>
+                <div>
+                  <h3>先固定 528 名现役球员的 2K26 属性快照</h3>
+                  <p>脚本从 2K 数据中筛出当前球队球员，排除历史队与全明星队，再把原始属性收拢为篮下、中投、三分、罚球、组织、持球、内外线防守、抢断、盖帽、篮板、力量和速度。身高、体重、位置、徽章与建模类型也保留，成为每名球员不会随单场样本剧烈变化的能力基线。</p>
+                </div>
+              </article>
+              <article className="nba-story-detail-row">
+                <span>02 · 合并赛季表现</span>
+                <div>
+                  <h3>把 Basketball-Reference 的 2025–26 数据按球员归一化匹配</h3>
+                  <p>数据接入不是简单按姓名连接。我先去除重音符号、标点和 Jr. / III 等后缀，再为少量特殊姓名补别名；遇到赛季中途换队的球员，则按出场场次汇总多支球队的数据。最终 512 / 528 名球员完成匹配，得分、篮板、助攻、出场时间、出手结构和命中率进入同一份快照。</p>
+                </div>
+              </article>
+              <article className="nba-story-detail-row">
+                <span>03 · 接入球权数据</span>
+                <div>
+                  <h3>保留 Basketball Excel 的完整原始表，只把比赛需要的字段送进前端</h3>
+                  <p>授权快照包含 261 个字段。我在本地保留原始数据用于追溯，浏览器端只接收持球 / 无球负荷与效率、触球时间、前场触球、潜在助攻、突破，以及单打、背身、挡拆、定点、空切、手递手、无球掩护和转换进攻的回合量与每回合得分。这样既能解释球员角色，也不会让页面在运行时依赖外部接口。</p>
+                </div>
+              </article>
+              <article className="nba-story-detail-row">
+                <span>04 · 处理不确定性</span>
+                <div>
+                  <h3>真实样本只负责修正能力，不直接推翻能力</h3>
+                  <p>赛季数据按累计出场分钟计算可信度：样本越充分，真实效率对投射和倾向的修正越大；样本不足时更多保留 2K 基线。Play Type 也按已分类回合数做同样的加权，缺失值会回退到位置、能力与基础统计推导的结果，而不是把“没有记录”误判成“不会这样打”。</p>
+                </div>
+              </article>
+            </div>
+            <div className="nba-story-data-map" role="table" aria-label="球员数据如何进入模拟器">
+              <div className="nba-story-data-map-head" role="row"><span role="columnheader">数据层</span><span role="columnheader">保留的信号</span><span role="columnheader">在比赛里定义什么</span></div>
+              <div role="row"><strong role="cell">2K26 属性</strong><span role="cell">投射、组织、持球、防守、身体与徽章</span><span role="cell">动作能不能完成，以及完成的基础质量</span></div>
+              <div role="row"><strong role="cell">赛季统计</strong><span role="cell">出场、出手、效率、助攻、失误与篮板</span><span role="cell">当季状态、使用倾向、体能容量与数据可信度</span></div>
+              <div role="row"><strong role="cell">球权 / Play Type</strong><span role="cell">触球、持球、无球、九类打法负荷与效率</span><span role="cell">谁发起、谁终结、用什么方式以及能否共存</span></div>
+            </div>
+            <div className="nba-story-factline">
+              <strong>528 名</strong><span>现役球员完成中文化</span>
+              <strong>512 名</strong><span>匹配真实赛季与球权数据</span>
+              <strong>97%</strong><span>两类真实数据的匹配覆盖率</span>
+            </div>
+          </div>
+        </section>
+
+        <section className="nba-story-chapter" id="draft">
+          <div className="nba-story-marker"><span>03</span><small>DRAFT</small></div>
+          <div className="nba-story-body" data-reveal>
+            <span className="eyebrow">找到真正的游戏核心</span>
+            <h2>模拟阶段玩家只是在观看，真正的博弈必须发生在选秀里</h2>
+            <p className="nba-story-lead">第一版做完后，我发现比赛模拟再完整，玩家也无法在每个回合直接操作。这个项目最需要增强的不是“再加一种随机事件”，而是把赛前选择做深：让每一个签位都改变之后的阵容结构、轮换和比赛方式。</p>
+            <aside className="nba-story-pivot">
+              <span>设计转折</span>
+              <p>从“五轮里尽量拿最高总评”，推进到“十二轮里持续处理球星质量、位置、投射、防守、球权和替补深度之间的冲突”。选秀由赛前步骤变成了整局游戏本身。</p>
+            </aside>
+            <div className="nba-story-detail-list nba-story-draft-arc">
+              <article className="nba-story-detail-row">
+                <span>前五轮</span>
+                <div>
+                  <h3>先组成一套能上场的首发，而不是五个名字</h3>
+                  <p>每次从随机球队的现役名单中选择一人，并立即安排到 PG–C 的具体位置。玩家可以尝试错位，但身高、天然位置和对位能力都会在比赛中付出代价，因此“这个球星很强”和“他适合这个位置”是两个不同判断。</p>
+                </div>
+              </article>
+              <article className="nba-story-detail-row">
+                <span>第六至十二轮</span>
+                <div>
+                  <h3>补替补时，选择开始围绕短板而不是名气</h3>
+                  <p>后七轮要决定谁能替主控、谁能守锋线、谁能保护篮板，以及阵容需要九人短轮换还是更深的十二人轮换。系统会持续暴露位置空缺、投射、防守、篮板和球权拥挤，后期签位因此仍然能改变比赛。</p>
+                </div>
+              </article>
+              <article className="nba-story-detail-row">
+                <span>选择约束</span>
+                <div>
+                  <h3>蛇形顺序和一次换队机会，让随机性产生取舍</h3>
+                  <p>双方轮次交替反转，减少先手连续吃到优势的可能；每局只能更换一次候选球队，也不能无限刷新到理想球星。玩家必须判断是现在补缺，还是赌下一轮会出现更合适的人。</p>
+                </div>
+              </article>
+              <article className="nba-story-detail-row">
+                <span>电脑对手</span>
+                <div>
+                  <h3>电脑也会看阵容需要，但不会每次机械地选唯一最优解</h3>
+                  <p>候选分数同时考虑总评、天然位置、投射、组织、防守、篮板缺口和球权适配；再从分差接近的前三名里按权重选择。这样既避免电脑只堆最高总评，也保留每局选秀不完全相同的博弈感。</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className="nba-story-chapter" id="fit">
+          <div className="nba-story-marker"><span>04</span><small>FIT</small></div>
+          <div className="nba-story-body" data-reveal>
+            <span className="eyebrow">让阵容强度来自结构</span>
+            <h2>球权和轮换共同决定：这十二个人能不能真正一起打</h2>
+            <p className="nba-story-lead">我没有把阵容评价做成十二个总评的平均数。模拟前先解决两件事：场上五个人怎样分配有限的发起权，场下七个人怎样接住不同位置和体能留下的时间。</p>
+            <div className="nba-story-logic-group">
+              <header>
+                <span>POSSESSION · 球权设计</span>
+                <h3>先计算每个人“需要多少持球回合”，再分配阵容实际能提供的回合</h3>
+              </header>
+              <div className="nba-story-logic-row"><strong>需求从哪里来</strong><p>优先读取单打、背身和挡拆持球的每百回合负荷；样本不足时，再用使用率、组织和控球能力生成替代值。它表达的是球员要维持原有打法，需要占用多少发起资源。</p></div>
+              <div className="nba-story-logic-row"><strong>怎样分配</strong><p>一套五人阵容的正常持球容量设为 43。每个人先获得最低回合，再按总评、组织、控球和真实持球需求确定优先级，把剩余球权依次分给最适合的创造者。</p></div>
+              <div className="nba-story-logic-row"><strong>超载会怎样</strong><p>当总需求超过容量，次要持球手的发起和终结机会逐步下降，不是在开场前直接扣掉一个固定分数。比赛会持续记录真实发起次数，短暂让第二创造者带队，并根据过程累积角色边缘化。</p></div>
+              <div className="nba-story-logic-row"><strong>无球如何补偿</strong><p>被让出球权并不等于失去价值。真实无球占比和无球效率越高，球员越能通过定点、空切、绕掩护和手递手重新进入进攻；只会长时间持球的第二核心则更容易被挤出角色。</p></div>
+            </div>
+            <div className="nba-story-logic-group">
+              <header>
+                <span>ROTATION · 轮换设计</span>
+                <h3>替补席不是加分项，而是首发能否撑完整场比赛的条件</h3>
+              </header>
+              <div className="nba-story-logic-row"><strong>体能容量</strong><p>以真实赛季场均时间为主，比赛场次只做小幅耐久修正，速度与力量做次要修正。上场、持球发起和完成终结都会消耗体能，替补休息与节间才能恢复。</p></div>
+              <div className="nba-story-logic-row"><strong>换人边界</strong><p>系统每隔若干回合检查体能、犯规、末节阶段和位置需求。替补只能在前两个天然位置上场，因此一个没有替补控卫或中锋的阵容，会让对应首发承担更长时间，而不是随便塞入一名高总评球员。</p></div>
+              <div className="nba-story-logic-row"><strong>深度取舍</strong><p>轮换可在 5–12 人之间设置。短轮换集中核心时间但更容易疲劳；深轮换保护体能却会摊薄主力出场。典型九人轮换的首发目标约 33 分钟，十二人轮换约 28.5 分钟。</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section className="nba-story-chapter" id="game">
+          <div className="nba-story-marker"><span>05</span><small>GAME</small></div>
+          <div className="nba-story-body" data-reveal>
+            <span className="eyebrow">把阵容选择翻译成比赛过程</span>
+            <h2>一场比赛不是算一次胜率，而是连续生成每一个攻防回合</h2>
+            <p className="nba-story-lead">每个回合都沿着同一条可追溯的计算路径前进。战术先改变什么进攻更可能发生，再由场上球员的真实打法决定谁来发起、谁来终结；防守、对位、体能和规则最后共同决定事件结果。</p>
+            <div className="nba-story-possession-trace">
+              <article>
+                <span>01</span>
+                <h3>确定本节节奏与场上阵容</h3>
+                <p>每节先根据双方策略和阵容平均速度估算回合数。系统持续维护场上五人、个人犯规和实时体能，并定期检查是否需要换人；末节关键阶段还会调整主力使用方式。</p>
+              </article>
+              <article>
+                <span>02</span>
+                <h3>从阵容会打什么，选出这次进攻方式</h3>
+                <p>候选包括单打、背身、挡拆、定点、空切、手递手、无球掩护和转换。选择权重由五名球员对应 Play Type 的真实负荷累加，再乘以进攻策略：强攻内线提高背身和空切，外线策略提高定点与无球掩护，挡拆策略提高持球人和顺下人的出现频率。策略只能改变分布，不能凭空让不会投篮的人变成射手。</p>
+              </article>
+              <article>
+                <span>03</span>
+                <h3>分别选择发起者与终结者</h3>
+                <p>发起者看已分配球权、组织、前场触球、潜在助攻，以及对当前打法的熟悉度；终结者再看使用倾向、该打法负荷、篮下或投射能力和角色融入度。单打与背身通常由同一人完成，挡拆、定点和空切则允许创造者把回合交给更合适的终结点。</p>
+              </article>
+              <article>
+                <span>04</span>
+                <h3>把打法落到具体出手区域与对位</h3>
+                <p>篮下、中距离和三分的选择同时受球员出手倾向、能力和打法约束。防守端再根据人盯人、收缩内线、外线压迫或无限换防建立对位：收缩会保护篮下但放大外线空间，换防能打断挡拆却可能制造身高与力量错位。</p>
+              </article>
+              <article>
+                <span>05</span>
+                <h3>计算这次事件，而不是直接计算最终比分</h3>
+                <p>命中、失误、抢断、盖帽和犯规分别读取对应能力、Play Type 效率、球权适配、体能、对位质量和少量随机波动。投丢后仍会继续判断前场篮板与补篮；进入罚球、团队犯规或六犯离场时，比赛状态也会随之更新。</p>
+              </article>
+              <article>
+                <span>06</span>
+                <h3>把结果写回下一回合</h3>
+                <p>比分、时间、技术统计、体能、犯规、球员发起次数与角色状态都会被保存。它们会影响下一次换人、重点球员的回合份额和末节决策，因此一场比赛是连续状态变化，而不是彼此独立的随机抽签。</p>
+              </article>
+            </div>
+            <div className="nba-story-rule-ledger">
+              <article><strong>为什么可以校准</strong><p>同一阵容、策略和固定种子会复现相同比分、逐回合事件与技术统计。每次修改都能与上一版做稳定对照，而不是凭“这场看起来像不像”判断。</p></article>
+              <article><strong>为什么结果可解释</strong><p>赛后不只保留比分，还保留逐节走势、打法分布、完整技术统计、关键事件与球权角色变化。用户可以从结果反推：是阵容没投射、轮换断档，还是多个核心争用了同一批回合。</p></article>
+            </div>
+          </div>
+        </section>
+
+        <section className="nba-story-chapter" id="report">
+          <div className="nba-story-marker"><span>06</span><small>REPORT</small></div>
+          <div className="nba-story-body" data-reveal>
+            <span className="eyebrow">从终场比分回到比赛过程</span>
+            <h2>让用户看见“为什么赢”</h2>
+            <p className="nba-story-lead">直播阶段展示实时比分、场上五人、体能、换人和关键回合；终场后再把比赛拆成逐节比分、完整技术统计、MVP、打法分布与角色变化。</p>
+            <div className="nba-story-report-list">
+              {[
+                ["比赛直播", "实时比分、比赛时钟、场上阵容、体能和逐回合事件"],
+                ["赛后数据", "得分、篮板、前场篮板、助攻、抢断、盖帽、失误、犯规、命中率与时间"],
+                ["结果解释", "把关键回合、单节走势、MVP 表现、战术匹配和球权边缘化串成赛后故事"],
+                ["再次决策", "保留同阵容再战、重选替补、重新选秀三种入口，并保存最近 20 场战报"],
+              ].map(([title, copy]) => <article key={title}><h3>{title}</h3><p>{copy}</p></article>)}
+            </div>
+          </div>
+        </section>
+
+        <section className="nba-story-chapter nba-story-current" id="current">
+          <div className="nba-story-marker"><span>07</span><small>CURRENT</small></div>
+          <div className="nba-story-body" data-reveal>
+            <span className="eyebrow">目前做到哪里</span>
+            <h2>核心闭环已经完成，校准仍在继续</h2>
+            <div className="result-grid">{item.results.map(([number, label]) => <article key={label}><strong>{number}</strong><span>{label}</span></article>)}</div>
+            <p className="nba-story-lead">当前版本已经覆盖从十二人选秀到赛后再决策的完整流程，并通过 43 项自动化测试检查数据完整性、位置与轮换、犯规和加时、战术效果、球权适配及固定种子复现。</p>
+            <blockquote>{item.reflection}</blockquote>
+          </div>
+        </section>
+
+        <nav className="case-pagination case-pagination-2" aria-label="项目导航">
+          <a href="#/section/projects">返回全部项目经历</a>
+          <a href="#/section/contact">联系我</a>
+        </nav>
+      </main>
+      <footer><span>© 2026 VITOR DAI</span><a href="mailto:vitord@qq.com">联系我</a></footer>
+    </div>
+  );
+}
+
 function ProjectDetailPage({ item }) {
   useMotion();
   return (
@@ -872,7 +1128,11 @@ export function App() {
     page = <NotFound />;
   } else if (projectId) {
     const project = projects.find((entry) => entry.id === projectId);
-    page = project ? <ProjectDetailPage item={project} /> : <NotFound />;
+    page = project
+      ? project.id === "nba-draft-duel"
+        ? <NbaProjectDetailPage item={project} />
+        : <ProjectDetailPage item={project} />
+      : <NotFound />;
   } else if (!detailId) {
     page = <HomePage initialTarget={section} />;
   } else {

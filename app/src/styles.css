@@ -280,6 +280,66 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
 .report-lightbox-viewport img { display: block; width: min(520px, 88vw); height: auto; }
 .report-lightbox-viewport-wide { max-width: min(980px, 94vw); background: #fff; }
 .report-lightbox-viewport-wide img { width: min(920px, 90vw); }
+.nba-story-hero { position: relative; display: grid; align-items: end; min-height: 760px; padding: 150px max(40px,calc((100% - var(--max)) / 2)) 92px; color: #fff; background: #07111f; overflow: hidden; }
+.nba-story-hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; opacity: .72; }
+.nba-story-hero-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(4,10,20,.96) 0%, rgba(4,10,20,.78) 42%, rgba(4,10,20,.22) 78%, rgba(4,10,20,.1) 100%), linear-gradient(0deg, rgba(4,10,20,.72), transparent 55%); }
+.nba-story-hero-copy { position: relative; z-index: 2; max-width: 790px; }
+.nba-story-hero-copy .eyebrow { color: #77a6ff; }
+.nba-story-hero-copy h1 { max-width: 760px; margin: 20px 0 24px; font-size: clamp(58px,6.5vw,92px); font-weight: 500; line-height: 1.04; letter-spacing: -.06em; }
+.nba-story-hero-copy > p { max-width: 690px; margin: 0; color: rgba(235,242,255,.82); font-size: 18px; line-height: 1.9; }
+.nba-story-hero-copy .tag-list span { color: #dce8ff; border-color: rgba(119,166,255,.28); background: rgba(18,42,75,.62); }
+.nba-story-progress { display: grid; grid-template-columns: repeat(7,1fr); max-width: var(--max); margin: 0 auto; padding: 34px 0; border-bottom: 1px solid var(--line); }
+.nba-story-progress span { display: grid; gap: 6px; color: var(--muted); font-size: 12px; border-right: 1px solid var(--line); text-align: center; }
+.nba-story-progress span:last-child { border-right: 0; }
+.nba-story-progress b { color: var(--blue); font: 11px "IBM Plex Mono", monospace; }
+.nba-story-chapter { display: grid; grid-template-columns: 110px minmax(0,1fr); gap: 64px; max-width: var(--max); margin: 0 auto; padding: 122px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 70px; }
+.nba-story-marker { position: sticky; top: 110px; align-self: start; display: grid; gap: 8px; padding-top: 6px; }
+.nba-story-marker span { color: var(--blue); font: 500 38px "IBM Plex Mono", monospace; letter-spacing: -.06em; }
+.nba-story-marker small { color: var(--muted); font: 10px "IBM Plex Mono", monospace; letter-spacing: .12em; }
+.nba-story-body { min-width: 0; }
+.nba-story-body > .eyebrow { display: block; margin-bottom: 18px; }
+.nba-story-body h2 { max-width: 900px; margin: 0 0 30px; font-size: clamp(36px,4vw,58px); font-weight: 500; line-height: 1.2; letter-spacing: -.045em; }
+.nba-story-body > p { max-width: 900px; margin: 22px 0 0; color: var(--muted); font-size: 15px; line-height: 2; }
+.nba-story-body .nba-story-lead { color: #394659; font-size: 18px; }
+.nba-story-detail-list { margin-top: 58px; border-top: 2px solid var(--ink); }
+.nba-story-detail-row { display: grid; grid-template-columns: 160px minmax(0,1fr); gap: 40px; padding: 34px 0 38px; border-bottom: 1px solid var(--line); }
+.nba-story-detail-row > span { padding-top: 5px; color: var(--blue); font: 11px "IBM Plex Mono", monospace; letter-spacing: .04em; }
+.nba-story-detail-row h3 { max-width: 700px; margin: 0 0 14px; font-size: 22px; font-weight: 500; line-height: 1.5; }
+.nba-story-detail-row p { max-width: 760px; margin: 0; color: var(--muted); font-size: 14px; line-height: 2; }
+.nba-story-data-map { margin-top: 62px; border-top: 2px solid var(--blue); }
+.nba-story-data-map > div { display: grid; grid-template-columns: 160px 1fr 1.15fr; gap: 30px; padding: 21px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.nba-story-data-map strong { font-size: 14px; font-weight: 500; }
+.nba-story-data-map span { color: var(--muted); font-size: 13px; line-height: 1.75; }
+.nba-story-data-map .nba-story-data-map-head { padding: 15px 0; }
+.nba-story-data-map-head span { color: var(--blue); font: 10px "IBM Plex Mono", monospace; letter-spacing: .06em; }
+.nba-story-factline { display: grid; grid-template-columns: auto 1fr auto 1fr auto 1fr; gap: 12px 20px; align-items: baseline; margin-top: 44px; padding: 28px 0; border-top: 1px solid rgba(55,107,255,.28); border-bottom: 1px solid rgba(55,107,255,.28); }
+.nba-story-factline strong { color: var(--blue); font: 500 34px "Noto Sans SC", sans-serif; letter-spacing: -.04em; }
+.nba-story-factline span { color: var(--muted); font-size: 12px; }
+.nba-story-pivot { display: grid; grid-template-columns: 160px minmax(0,1fr); gap: 40px; margin: 50px 0 0; padding: 28px 0; border-top: 2px solid var(--blue); border-bottom: 1px solid var(--line); }
+.nba-story-pivot span { color: var(--blue); font: 11px "IBM Plex Mono", monospace; letter-spacing: .04em; }
+.nba-story-pivot p { max-width: 760px; margin: 0; color: #394659; font-size: 17px; line-height: 1.9; }
+.nba-story-draft-arc { margin-top: 18px; border-top: 0; }
+.nba-story-logic-group { margin-top: 68px; border-top: 2px solid var(--blue); }
+.nba-story-logic-group header { display: grid; grid-template-columns: 200px minmax(0,1fr); gap: 40px; padding: 30px 0 34px; }
+.nba-story-logic-group header span { padding-top: 6px; color: var(--blue); font: 10px "IBM Plex Mono", monospace; letter-spacing: .06em; }
+.nba-story-logic-group header h3 { max-width: 720px; margin: 0; font-size: 25px; font-weight: 500; line-height: 1.5; }
+.nba-story-logic-row { display: grid; grid-template-columns: 200px minmax(0,1fr); gap: 40px; padding: 24px 0 27px; border-top: 1px solid var(--line); }
+.nba-story-logic-row strong { font-size: 14px; font-weight: 500; }
+.nba-story-logic-row p { max-width: 720px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.95; }
+.nba-story-possession-trace { margin-top: 60px; border-top: 2px solid var(--ink); }
+.nba-story-possession-trace article { display: grid; grid-template-columns: 58px 250px minmax(0,1fr); gap: 28px; padding: 31px 0 35px; border-bottom: 1px solid var(--line); align-items: start; }
+.nba-story-possession-trace span { color: var(--blue); font: 500 18px "IBM Plex Mono", monospace; }
+.nba-story-possession-trace h3 { margin: 0; font-size: 18px; font-weight: 500; line-height: 1.55; }
+.nba-story-possession-trace p { max-width: 650px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.95; }
+.nba-story-rule-ledger { margin-top: 52px; border-top: 2px solid var(--blue); }
+.nba-story-rule-ledger article { display: grid; grid-template-columns: 180px minmax(0,1fr); gap: 40px; padding: 26px 0 30px; border-bottom: 1px solid var(--line); }
+.nba-story-rule-ledger strong { font-size: 14px; font-weight: 500; }
+.nba-story-rule-ledger p { max-width: 720px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.95; }
+.nba-story-report-list h3 { margin: 0 0 14px; font-size: 17px; font-weight: 500; }
+.nba-story-report-list p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
+.nba-story-report-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-top: 50px; border: 1px solid var(--line); background: var(--line); }
+.nba-story-report-list article { min-height: 180px; padding: 32px; background: var(--bg); }
+.nba-story-current blockquote { max-width: 900px; margin: 52px 0 0; padding: 34px 0 34px 30px; border-left: 2px solid var(--blue); font-size: clamp(20px,2.4vw,30px); font-weight: 300; line-height: 1.75; }
 .project-detail-page #workflow { padding-top: 92px; }
 .project-case-visual { position: relative; margin: 4px 0 34px; padding: 18px; border: 1px solid rgba(55,107,255,.22); border-radius: 8px; overflow: hidden; background: linear-gradient(180deg, rgba(55,107,255,.045), rgba(255,255,255,.28)); box-shadow: 0 18px 44px rgba(28,55,110,.07); }
 .project-case-visual::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 50% 32%, rgba(35,181,255,.12), transparent 48%); }
@@ -323,6 +383,7 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
 .result-grid span { margin-top: 12px; color: var(--muted); font-size: 12px; }
 .reflection-content blockquote { max-width: 890px; margin: 0; padding: 45px 0 45px 40px; border-left: 2px solid var(--blue); font-size: clamp(22px,2.5vw,34px); font-weight: 300; line-height: 1.75; letter-spacing: -.02em; }
 .case-pagination { display: grid; grid-template-columns: 1fr 1fr 1fr; max-width: var(--max); margin: 80px auto; border: 1px solid var(--line); border-radius: 7px; }
+.case-pagination-2 { grid-template-columns: 1fr 1fr; }
 .case-pagination a { padding: 22px; color: var(--muted); font-size: 12px; text-align: center; text-decoration: none; border-right: 1px solid var(--line); }
 .case-pagination a:last-child { border-right: 0; }
 .case-pagination a:hover { color: var(--blue); background: rgba(255,255,255,.6); }
@@ -405,6 +466,14 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
   .report-workflow article:first-child { border-top: 0; }
   .project-decor-hero { width: min(56vw, 520px); opacity: .42; }
   .project-decor-section { width: min(46vw, 360px); opacity: .36; }
+  .nba-story-hero { min-height: 680px; padding-left: 24px; padding-right: 24px; }
+  .nba-story-progress { padding-left: 24px; padding-right: 24px; }
+  .nba-story-chapter { grid-template-columns: 80px minmax(0,1fr); gap: 34px; padding-left: 24px; padding-right: 24px; }
+  .nba-story-detail-row, .nba-story-pivot { grid-template-columns: 130px minmax(0,1fr); gap: 28px; }
+  .nba-story-data-map > div { grid-template-columns: 130px 1fr 1fr; gap: 22px; }
+  .nba-story-logic-group header, .nba-story-logic-row { grid-template-columns: 160px minmax(0,1fr); gap: 28px; }
+  .nba-story-possession-trace article { grid-template-columns: 50px 210px minmax(0,1fr); gap: 20px; }
+  .nba-story-factline { grid-template-columns: auto 1fr; }
   .chapter-nav { position: relative; right: auto; bottom: auto; margin-top: 50px; grid-template-columns: repeat(4,auto); }
   .product-stage-timeline { grid-template-columns: repeat(2,1fr); row-gap: 44px; }
   .product-stage-timeline article { min-height: 190px; }
@@ -476,6 +545,34 @@ footer { display: flex; justify-content: space-between; max-width: var(--max); m
   .project-decor { opacity: .24; }
   .project-decor-hero { left: 8px; bottom: 22px; width: 74vw; }
   .project-decor-section { right: -18px; top: 28px; width: 66vw; }
+  .nba-story-hero { min-height: 660px; padding: 120px 16px 62px; }
+  .nba-story-hero > img { object-position: 60% center; opacity: .58; }
+  .nba-story-hero-shade { background: linear-gradient(90deg, rgba(4,10,20,.96), rgba(4,10,20,.62)), linear-gradient(0deg, rgba(4,10,20,.7), transparent 58%); }
+  .nba-story-hero-copy h1 { font-size: 50px; }
+  .nba-story-hero-copy > p { font-size: 15px; }
+  .nba-story-progress { grid-template-columns: repeat(4,1fr); gap: 22px 0; padding: 28px 16px; }
+  .nba-story-progress span:nth-child(4) { border-right: 0; }
+  .nba-story-chapter { grid-template-columns: 1fr; gap: 28px; padding: 78px 16px; }
+  .nba-story-marker { position: static; grid-template-columns: auto 1fr; align-items: baseline; }
+  .nba-story-marker span { font-size: 30px; }
+  .nba-story-body h2 { font-size: 36px; }
+  .nba-story-body .nba-story-lead { font-size: 16px; }
+  .nba-story-detail-list, .nba-story-possession-trace { margin-top: 44px; }
+  .nba-story-detail-row, .nba-story-pivot, .nba-story-logic-group header, .nba-story-logic-row, .nba-story-possession-trace article, .nba-story-rule-ledger article { grid-template-columns: 1fr; gap: 12px; }
+  .nba-story-detail-row { padding: 26px 0 30px; }
+  .nba-story-detail-row h3 { font-size: 19px; }
+  .nba-story-data-map { margin-top: 46px; }
+  .nba-story-data-map-head { display: none !important; }
+  .nba-story-data-map > div { grid-template-columns: 1fr; gap: 8px; padding: 20px 0; }
+  .nba-story-data-map > div span:last-child { color: #394659; }
+  .nba-story-factline { grid-template-columns: auto 1fr; padding: 22px; }
+  .nba-story-factline strong { font-size: 28px; }
+  .nba-story-pivot p { font-size: 15px; }
+  .nba-story-logic-group { margin-top: 52px; }
+  .nba-story-logic-group header h3 { font-size: 21px; }
+  .nba-story-possession-trace h3 { font-size: 17px; }
+  .nba-story-report-list { grid-template-columns: 1fr; }
+  .nba-story-current blockquote { padding-left: 22px; font-size: 21px; }
   .project-case-visual { margin-bottom: 46px; padding: 14px; }
   .project-module-heading { display: grid; gap: 8px; }
   .chapter-nav { grid-template-columns: 1fr 1fr; gap: 18px; }
