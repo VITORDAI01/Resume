@@ -414,6 +414,7 @@ function Header({ detail = false }) {
         <a href={navHref("education")} onClick={() => setOpen(false)}>教育</a>
         <a href={navHref("experience")} onClick={() => setOpen(false)}>实习经历</a>
         <a href={navHref("projects")} onClick={() => setOpen(false)}>项目经历</a>
+        <a href="#/tools" onClick={() => setOpen(false)}>工具箱</a>
         <a href={navHref("skills")} onClick={() => setOpen(false)}>能力</a>
         <a href={navHref("contact")} onClick={() => setOpen(false)}>联系</a>
       </nav>
@@ -1114,6 +1115,78 @@ function ProjectDetailPage({ item }) {
   );
 }
 
+function ToolsPage() {
+  useMotion();
+  return (
+    <div className="page-shell detail-page tools-page">
+      <div className="scroll-progress" />
+      <Header detail />
+      <main className="tools-simple-main">
+        <section className="tools-simple-intro">
+          <span>Vitor Tools</span>
+          <h1>Vitor 工具箱</h1>
+          <p>一些自己做、自己用，也愿意分享出来的小工具。</p>
+        </section>
+
+        <section className="tools-simple-list" aria-label="可用工具">
+          <a className="tool-simple-row" href="#/tools/keyboard-cleaner">
+            <img src={asset("keyboard-cleaner-icon.png")} alt="" />
+            <div>
+              <h2>键盘清洁锁</h2>
+              <p>清洁键盘时临时屏蔽按键和快捷键，鼠标仍可随时恢复。</p>
+              <p className="tool-simple-reason"><b>为什么做</b>擦键盘时很容易误触快捷键、输入内容或切换窗口，所以做了一个只在清洁期间生效的原生小工具。</p>
+            </div>
+            <span>macOS · 免费下载</span>
+            <strong aria-hidden="true">→</strong>
+          </a>
+        </section>
+      </main>
+      <footer><span>© 2026 VITOR DAI</span><a href="mailto:vitord@qq.com">联系我</a></footer>
+    </div>
+  );
+}
+
+function KeyboardCleanerPage() {
+  useMotion();
+  return (
+    <div className="tool-minimal-page">
+      <header className="tool-minimal-header">
+        <a href="#/tools">Vitor 工具箱</a>
+        <a href="#/">返回简历</a>
+      </header>
+      <main className="tool-minimal-main">
+        <a className="tool-minimal-back" href="#/tools">← 返回工具箱</a>
+
+        <section className="tool-minimal-hero">
+          <img src={asset("keyboard-cleaner-icon.png")} alt="键盘清洁锁应用图标" />
+          <span>macOS 菜单栏应用 · v1.0.0</span>
+          <h1>键盘清洁锁</h1>
+          <p className="tool-minimal-copy">点击“开始清洁”，3 秒后屏蔽当前登录会话里的按键和快捷键。鼠标与触控板保持可用，清洁结束后可随时恢复；5 分钟后也会自动解锁。</p>
+          <div className="tool-minimal-actions">
+            <a href={`${base}downloads/keyboard-cleaner-v1.0.0-macOS.zip`} download>下载 macOS 版</a>
+            <span>Apple Silicon · macOS 14+</span>
+          </div>
+        </section>
+
+        <section className="tool-minimal-uses">
+          <h2>首次打开方式</h2>
+          <p>下载解压后拖入“应用程序”，按住 Control 点击“键盘清洁锁”并选择“打开”。首次锁定前，根据提示在“系统设置 → 隐私与安全性 → 辅助功能”中授权。</p>
+        </section>
+
+        <figure className="tool-settings-shot">
+          <div className="tool-settings-frame tool-settings-frame-widget">
+            <img src={asset("keyboard-cleaner-app.jpg")} alt="键盘清洁锁主界面，包含权限状态、开始清洁按钮和自动恢复说明" />
+          </div>
+          <figcaption>锁定期间，主窗口和菜单栏都可以用鼠标恢复键盘。</figcaption>
+        </figure>
+
+        <p className="tool-minimal-note">它不会断开或修改键盘硬件，而是在系统输入层临时拦截按键；不读取、不记录输入内容。退出应用或进程结束时，键盘会立即恢复。</p>
+      </main>
+      <footer className="tool-minimal-footer"><span>© 2026 VITOR DAI</span><a href="#/tools">更多工具</a></footer>
+    </div>
+  );
+}
+
 function NotFound() {
   return <main className="not-found"><p>这个页面暂时不存在。</p><a className="button primary" href="#/">返回首页</a></main>;
 }
@@ -1122,10 +1195,13 @@ export function App() {
   const route = useHashRoute();
   const detailId = useMemo(() => route.match(/^#\/experience\/([^/]+)/)?.[1], [route]);
   const projectId = useMemo(() => route.match(/^#\/project\/([^/]+)/)?.[1], [route]);
+  const toolId = useMemo(() => route.match(/^#\/tools\/([^/]+)/)?.[1], [route]);
   const section = useMemo(() => route.match(/^#\/section\/([^/]+)/)?.[1], [route]);
   let page;
-  if (route === "#/tools" || route.startsWith("#/tools/")) {
-    page = <NotFound />;
+  if (toolId) {
+    page = toolId === "keyboard-cleaner" ? <KeyboardCleanerPage /> : <NotFound />;
+  } else if (route === "#/tools") {
+    page = <ToolsPage />;
   } else if (projectId) {
     const project = projects.find((entry) => entry.id === projectId);
     page = project
@@ -1139,5 +1215,5 @@ export function App() {
     const item = internships.find((entry) => entry.id === detailId);
     page = item ? <DetailPage item={item} /> : <NotFound />;
   }
-  return <>{page}<AskVitor /></>;
+  return <>{page}{!route.startsWith("#/tools") && <AskVitor />}</>;
 }
