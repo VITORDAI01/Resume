@@ -1220,11 +1220,11 @@ function ZhuoQianPage() {
 
         <section className="tool-minimal-hero">
           <img src={asset("zhuoqian-icon.png")} alt="桌签应用图标" />
-          <span>macOS 桌面小组件 · v2.0.4</span>
+          <span>macOS 桌面小组件 · v2.0.6</span>
           <h1>桌签</h1>
           <p className="tool-minimal-copy">一张真正留在桌面上的待办小组件。位置和尺寸由 macOS 管理；组件里直接勾选完成，点“＋”会在鼠标旁弹出输入条，回车即添加，点“×”则关闭并丢弃草稿。</p>
           <div className="tool-minimal-actions">
-            <a href={`${base}downloads/zhuoqian-v2.0.4-macOS.zip`} download>下载 macOS 版</a>
+            <a href={`${base}downloads/zhuoqian-v2.0.6-macOS.zip`} download>下载 macOS 版</a>
             <span>Apple Silicon · macOS 14+</span>
           </div>
         </section>
