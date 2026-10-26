@@ -1129,6 +1129,16 @@ function ToolsPage() {
         </section>
 
         <section className="tools-simple-list" aria-label="可用工具">
+          <a className="tool-simple-row" href="#/tools/notchpad">
+            <img src={asset("notchpad-icon.png")} alt="" />
+            <div>
+              <h2>Notchpad</h2>
+              <p>桌签的升级版。鼠标移到刘海展开，移开自动收起，随手记下想法、暂存文件。</p>
+              <p className="tool-simple-reason"><b>为什么升级</b>从桌面便签走到屏幕顶部，让记录更容易找到，也更快收起；再加上多笔记、自动保存和防休眠。</p>
+            </div>
+            <span>macOS · 免费下载</span>
+            <strong aria-hidden="true">→</strong>
+          </a>
           <a className="tool-simple-row" href="#/tools/keyboard-cleaner">
             <img src={asset("keyboard-cleaner-icon.png")} alt="" />
             <div>
@@ -1207,6 +1217,53 @@ function KeyboardCleanerPage() {
   );
 }
 
+function NotchpadPage() {
+  useMotion();
+  return (
+    <div className="tool-minimal-page">
+      <header className="tool-minimal-header">
+        <a href="#/tools">Vitor 工具箱</a>
+        <a href="#/">返回简历</a>
+      </header>
+      <main className="tool-minimal-main">
+        <a className="tool-minimal-back" href="#/tools">← 返回工具箱</a>
+
+        <section className="tool-minimal-hero">
+          <img src={asset("notchpad-icon.png")} alt="Notchpad 应用图标" />
+          <span>桌签的升级版 · macOS 刘海笔记 · v1.0.0</span>
+          <h1>Notchpad</h1>
+          <p className="tool-minimal-copy">从桌面便签，升级为贴合 Mac 刘海的随手记。鼠标移到刘海处展开，移出面板自动收起；也能通过程序坞直接打开。记下想法、暂存文件，需要时让电脑保持唤醒。</p>
+          <div className="tool-minimal-actions">
+            <a href={`${base}downloads/Notchpad-v1.0.0-macOS-arm64.zip`} download>下载 macOS 版</a>
+            <a href="https://github.com/VITORDAI01/Notchpad" target="_blank" rel="noopener noreferrer">GitHub 源码</a>
+            <span>Apple Silicon · macOS 14+</span>
+          </div>
+        </section>
+
+        <figure className="tool-settings-shot">
+          <div className="tool-settings-frame tool-settings-frame-widget">
+            <img src={asset("notchpad-app.png")} alt="Notchpad 空白笔记界面：顶部切换、删除和新建笔记，底部提供 Markdown 标记、防休眠和文件暂存入口" />
+          </div>
+          <figcaption>黑色面板贴合屏幕顶部，离开即收起，记录自动保存在本机。</figcaption>
+        </figure>
+
+        <section className="tool-minimal-uses">
+          <h2>随手记录，也能暂存文件</h2>
+          <p>多篇笔记随时切换，自动保存；选择框旁的“×”可直接删除当前笔记。编辑器支持 Markdown 文本，底部按钮快捷插入格式标记。文件可拖入暂存区，再拖到其他应用；咖啡杯按钮用于防止空闲休眠。</p>
+        </section>
+
+        <section className="tool-minimal-uses">
+          <h2>首次打开方式</h2>
+          <p>下载解压后，将 Notchpad 拖入“应用程序”。本版尚未通过 Apple 公证；首次打开如被拦截，确认来源后，可到“系统设置 → 隐私与安全性”选择“仍要打开”。启动后把鼠标移到刘海处即可使用；无刘海屏幕可从顶部中央唤醒。</p>
+        </section>
+
+        <p className="tool-minimal-note">Notchpad 是桌签的升级版，作为独立应用安装；<a href="#/tools/zhuoqian">桌签原版</a>仍可下载，旧待办不会自动导入。文件暂存仅记录原文件位置；防休眠不改变合盖行为。当前支持本地保存，尚未接入 Obsidian。</p>
+      </main>
+      <footer className="tool-minimal-footer"><span>© 2026 VITOR DAI</span><a href="#/tools">更多工具</a></footer>
+    </div>
+  );
+}
+
 function ZhuoQianPage() {
   useMotion();
   return (
@@ -1241,7 +1298,7 @@ function ZhuoQianPage() {
           <figcaption>快速输入可以明确关闭；关闭会清空未提交内容，避免误触后留下草稿。</figcaption>
         </figure>
 
-        <p className="tool-minimal-note">任务数据只保存在本机，不需要账号。菜单栏可随时快速添加、管理任务或刷新桌面小组件。</p>
+        <p className="tool-minimal-note">任务数据只保存在本机，不需要账号。菜单栏可随时快速添加、管理任务或刷新桌面小组件。桌签的升级版 <a href="#/tools/notchpad">Notchpad</a> 已上线，支持刘海悬停唤醒、多笔记、文件暂存和防休眠。</p>
       </main>
       <footer className="tool-minimal-footer"><span>© 2026 VITOR DAI</span><a href="#/tools">更多工具</a></footer>
     </div>
@@ -1301,7 +1358,9 @@ export function App() {
   const section = useMemo(() => route.match(/^#\/section\/([^/]+)/)?.[1], [route]);
   let page;
   if (toolId) {
-    if (toolId === "keyboard-cleaner") {
+    if (toolId === "notchpad") {
+      page = <NotchpadPage />;
+    } else if (toolId === "keyboard-cleaner") {
       page = <KeyboardCleanerPage />;
     } else if (toolId === "zhuoqian") {
       page = <ZhuoQianPage />;
